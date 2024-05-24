@@ -3,13 +3,15 @@ package com.java1504.ManagerUsers.InfoBase;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 
-import java.util.List;
+
 import java.util.Set;
 
 @Entity
 @Table
 public class Users {
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,10 +21,10 @@ public class Users {
     @JsonManagedReference
     private Set<Bank> banks;
 
-    @Column
+    @NotNull(message = "ten khong duoc de trong")
     private String name;
 
-    @Column
+    @NotNull(message = "so dien thoai khong duoc de trong")
     private String phone;
 
     @Column
