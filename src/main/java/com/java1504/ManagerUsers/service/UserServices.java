@@ -2,6 +2,7 @@ package com.java1504.ManagerUsers.service;
 
 import com.java1504.ManagerUsers.dto.BankDTO;
 import com.java1504.ManagerUsers.dto.UserDTO;
+import com.java1504.ManagerUsers.model.Bank;
 import com.java1504.ManagerUsers.model.Users;
 import org.springframework.stereotype.Service;
 
@@ -26,4 +27,14 @@ public interface UserServices {
     public UserDTO updateDto(int id, UserDTO userDTO);
 
     public Set<BankDTO> getBankDto();
+
+    public Users mapToEntity(UserDTO userDTO);
+
+    public BankDTO mapToDto(Bank bank);
+
+    public Bank mapToEntity(BankDTO bankDTO);
+
+    public Users addUser(Users user);
+
+    public Set<Bank> addBank(Set<Bank> bank, int id);
 }

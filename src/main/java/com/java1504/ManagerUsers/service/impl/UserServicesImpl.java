@@ -8,8 +8,6 @@ import com.java1504.ManagerUsers.model.Users;
 import com.java1504.ManagerUsers.service.UserServices;
 import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.config.ConfigDataResourceNotFoundException;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -18,7 +16,7 @@ import java.util.List;
 import java.util.Set;
 
 @Service
-public class UserServicesIpm implements UserServices {
+public class UserServicesImpl implements UserServices {
     @Autowired
     private UsersRepository usersRepository;
 
@@ -27,6 +25,20 @@ public class UserServicesIpm implements UserServices {
 
     public List<Users> addUsers(List<Users> users){
         return usersRepository.saveAll(users);
+    }
+
+    public Users addUser(Users user){
+        return usersRepository.save(user);
+    }
+
+    @Override
+    public Set<Bank> addBank(Set<Bank> bank, int id) {
+        Users user = usersRepository.findById(id).get();
+        if(user != null){
+            user.setBanks(bank);
+            return usersRepository.save(user).getBanks();
+        }
+        return null;
     }
 
     public List<Users> getALL(){
@@ -67,7 +79,6 @@ public class UserServicesIpm implements UserServices {
     @Override
     public UserDTO getUserById(int id) {
         return mapToDto(usersRepository.getById(id));
-
     }
 
     public Users mapToEntity(UserDTO userDTO){
@@ -101,6 +112,14 @@ public class UserServicesIpm implements UserServices {
         userDTO.setEmail(users.getEmail());
         userDTO.setAddress(users.getAddress());
         return userDTO;
+    }
+
+    public Bank mapToEntity (BankDTO bankDTO){
+        Bank bank = new Bank();
+        bank.setId(bankDTO.getId());
+        bank.setName(bankDTO.getNameBank());
+        bank.setNumberbank(bankDTO.getNumberBank());
+        return bank;
     }
 
     public UserDTO updateDto(int id, UserDTO userDTO){
