@@ -44,18 +44,14 @@ public class UsersController {
         return userServices.getALL();
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("delete/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
         public boolean deleteUser(@PathVariable int id){
             return userServices.deleteUser(id);
     }
 
-    @PutMapping("/edit/{id}")
-    public Users editInfo(@PathVariable int id,@RequestBody Users users){
-        return userServices.editInfo(id,users);
-    }
 
-    @GetMapping("/userDto")
+    @GetMapping("/user")
     public List<UserDTO> getUserDto(){
         return userServices.getuserdto();
     }
@@ -74,14 +70,7 @@ public class UsersController {
         }
     }
 
-
-    @PutMapping("/update/{id}")
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    public UserDTO updateDto(@PathVariable int id,@RequestBody UserDTO userDTO){
-        return userServices.updateDto(id,userDTO);
-    }
-
-    @PutMapping("/editdto/{id}")
+    @PutMapping("/updateUser/{id}")
     public ResponseData<?> updateUser(@RequestBody UserDTO userDTO,@PathVariable int id){
         try {
             return new ResponseData<>(HttpStatus.OK.value(), "UPDATE SUCCESS", LocalDateTime.now(),userServices.updateDto(id,userDTO));

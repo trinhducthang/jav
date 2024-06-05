@@ -32,7 +32,6 @@ public class Users {
     @Column
     private String dob;
 
-
     @Column
     public Gender gender;
 
