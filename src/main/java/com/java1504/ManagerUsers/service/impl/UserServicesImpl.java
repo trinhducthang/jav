@@ -2,6 +2,7 @@ package com.java1504.ManagerUsers.service.impl;
 
 import com.java1504.ManagerUsers.dto.BankDTO;
 import com.java1504.ManagerUsers.dto.UserDTO;
+import com.java1504.ManagerUsers.exception.UserNotFoundException;
 import com.java1504.ManagerUsers.model.Bank;
 import com.java1504.ManagerUsers.repository.UsersRepository;
 import com.java1504.ManagerUsers.model.Users;
@@ -31,15 +32,6 @@ public class UserServicesImpl implements UserServices {
         return usersRepository.save(user);
     }
 
-    @Override
-    public Set<Bank> addBank(Set<Bank> bank, int id) {
-        Users user = usersRepository.findById(id).get();
-        if(user != null){
-            user.setBanks(bank);
-            return usersRepository.save(user).getBanks();
-        }
-        return null;
-    }
 
     public List<Users> getALL(){
         return usersRepository.findAll();
@@ -56,7 +48,7 @@ public class UserServicesImpl implements UserServices {
 
     public Users editInfo(int id, Users users){
         Users users1 = usersRepository.getById(id);
-        if (    users1 != null){
+        if (users1 != null){
             users1.setName(users.getName());
             users1.setPhone(users.getPhone());
             users1.setDob(users.getDob());
@@ -139,5 +131,23 @@ public class UserServicesImpl implements UserServices {
             }
         }
         return  bankDTOS;
+    }
+
+    public UserDTO updateUser(UserDTO userDTO, int id) throws UserNotFoundException
+    {
+        Users users = usersRepository.getById(id);
+        if(users == null) {
+            throw new UserNotFoundException("User with ID " + id + " not found.");
+        }
+
+        users.setName(userDTO.getName());
+        users.setDob(userDTO.getDob());
+        users.setGender(userDTO.getGender());
+        users.setPhone(userDTO.getPhone());
+        users.setEmail(userDTO.getEmail());
+        users.setAddress(userDTO.getAddress());
+        usersRepository.save(users);
+
+        return userDTO;
     }
 }

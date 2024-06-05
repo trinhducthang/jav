@@ -1,49 +1,31 @@
 package com.java1504.ManagerUsers.controller;
 
 
-import com.java1504.ManagerUsers.dto.BankDTO;
 import com.java1504.ManagerUsers.dto.UserDTO;
-import com.java1504.ManagerUsers.model.Bank;
 import com.java1504.ManagerUsers.response.ResponseData;
 import com.java1504.ManagerUsers.service.UserServices;
 import com.java1504.ManagerUsers.model.Users;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
-import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @RestController
 public class UsersController {
 
+
     @Autowired
     private UserServices userServices;
-
 
     @Operation(summary = "summary", description = "Add Object", responses = {
             
     })
-    @PostMapping("/add")
-    public ResponseData<?> addUsers(@Valid @RequestBody List<Users> users) {
-        System.out.println("hello1");
-        try {
-            System.out.println("hello");
-            List<Users> user = userServices.addUsers(users);
-            return new ResponseData<>(HttpStatus.CREATED.value(), "User added successfully", LocalDateTime.now(), user);
-        } catch (Exception e) {
-            return new ResponseData<>(HttpStatus.BAD_REQUEST.value(), e.getMessage(), LocalDateTime.now());
-        }
-    }
-
-
     @PostMapping("/addDto")
     public ResponseData<?> addUserDto(@Valid @RequestBody UserDTO userDTO) {
         try {
@@ -73,8 +55,8 @@ public class UsersController {
         return userServices.editInfo(id,users);
     }
 
-    @GetMapping("/userdto")
-    public List<UserDTO> getuserdto(){
+    @GetMapping("/userDto")
+    public List<UserDTO> getUserDto(){
         return userServices.getuserdto();
     }
 
@@ -99,6 +81,16 @@ public class UsersController {
         return userServices.updateDto(id,userDTO);
     }
 
+    @PutMapping("/editdto/{id}")
+    public ResponseData<?> updateUser(@RequestBody UserDTO userDTO,@PathVariable int id){
+        try {
+            return new ResponseData<>(HttpStatus.OK.value(), "UPDATE SUCCESS", LocalDateTime.now(),userServices.updateDto(id,userDTO));
+
+        }
+        catch (EntityNotFoundException e){
+            return new ResponseData<>(HttpStatus.BAD_REQUEST.value(), e.getMessage(), LocalDateTime.now());
+        }
+    }
 
 
 

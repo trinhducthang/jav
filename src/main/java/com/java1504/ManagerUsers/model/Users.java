@@ -11,6 +11,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -25,8 +26,7 @@ public class Users {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-
-    @NotNull(message = "Name not null")
+    @Column
     private String name;
 
     @Column
@@ -36,18 +36,17 @@ public class Users {
     @Column
     public Gender gender;
 
-    @NotNull(message = "phone number not null")
+    @Column
     private String phone;
 
-    @Email(message = "Invalid email")
+    @Column
     private String email;
 
-
-    @NotNull(message = "Address not null")
+    @Column
     private String address;
 
 
-    @OneToMany(mappedBy = "users",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "users",cascade = CascadeType.DETACH)
     @JsonManagedReference
     private Set<Bank> banks;
 

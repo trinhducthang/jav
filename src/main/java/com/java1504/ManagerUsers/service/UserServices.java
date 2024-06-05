@@ -36,5 +36,5 @@ public interface UserServices {
 
     public Users addUser(Users user);
 
-    public Set<Bank> addBank(Set<Bank> bank, int id);
+    public UserDTO updateUser(UserDTO userDTO, int id);
 }
