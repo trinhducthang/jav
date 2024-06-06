@@ -1,16 +1,15 @@
 package com.java1504.ManagerUsers.response;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-
+import java.nio.file.Path;
 import java.time.LocalDateTime;
 
 @Data
 public class ResponseData<T> {
     private final int status;
     private final String message;
-    private final LocalDateTime localDateTime;
+    private LocalDateTime localDateTime;
+    private Path path;
 
     private T data;
 
@@ -18,8 +17,8 @@ public class ResponseData<T> {
         this.status = status;
 
         this.localDateTime = localDateTime;
-        int start = message.indexOf("='");
-        int end = message.lastIndexOf("',");
+        int start = message.indexOf("[");
+        int end = message.lastIndexOf("]");
         message = message.substring(start +2,end);
         this.message = message;
     }
@@ -31,5 +30,8 @@ public class ResponseData<T> {
         this.data = data;
     }
 
-
+    public ResponseData(int status, String message) {
+        this.status = status;
+        this.message = message;
+    }
 }

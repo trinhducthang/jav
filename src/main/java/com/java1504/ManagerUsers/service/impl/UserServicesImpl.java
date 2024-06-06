@@ -2,12 +2,10 @@ package com.java1504.ManagerUsers.service.impl;
 
 import com.java1504.ManagerUsers.dto.BankDTO;
 import com.java1504.ManagerUsers.dto.UserDTO;
-import com.java1504.ManagerUsers.exception.UserNotFoundException;
 import com.java1504.ManagerUsers.model.Bank;
 import com.java1504.ManagerUsers.repository.UsersRepository;
 import com.java1504.ManagerUsers.model.Users;
 import com.java1504.ManagerUsers.service.UserServices;
-import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,15 +19,22 @@ public class UserServicesImpl implements UserServices {
     @Autowired
     private UsersRepository usersRepository;
 
-    @Autowired
-    private EntityManager entityManager;
-
-    public List<Users> addUsers(List<Users> users){
-        return usersRepository.saveAll(users);
-    }
 
     public Users addUser(Users user){
         return usersRepository.save(user);
+    }
+
+    @Override
+    public boolean checkOverlap(UserDTO userDTO) {
+        List<Users> users = usersRepository.findAll();
+        for (Users users1 : users){
+            if(userDTO.getName().equals(users1.getName())
+            && userDTO.getDob().equals(users1.getDob())
+            && userDTO.getAddress().equals(users1.getAddress())){
+                return false;
+            }
+        }
+        return true;
     }
 
 
@@ -70,7 +75,8 @@ public class UserServicesImpl implements UserServices {
 
     @Override
     public UserDTO getUserById(int id) {
-        return mapToDto(usersRepository.getById(id));
+        Users users = usersRepository.findById(id).orElseThrow(() -> new RuntimeException("user khong ton tai"));
+        return mapToDto(users);
     }
 
     public Users mapToEntity(UserDTO userDTO){
@@ -119,35 +125,6 @@ public class UserServicesImpl implements UserServices {
         userDTO.setId(id);
         users = mapToEntity(userDTO);
         usersRepository.save(users);
-        return userDTO;
-    }
-
-    public Set<BankDTO> getBankDto(){
-        Set<BankDTO> bankDTOS = new HashSet<>();
-        List<Users> users = usersRepository.findAll();
-        for (Users users1 : users){
-            for (Bank bank : users1.getBanks()){
-                bankDTOS.add(mapToDto(bank));
-            }
-        }
-        return  bankDTOS;
-    }
-
-    public UserDTO updateUser(UserDTO userDTO, int id) throws UserNotFoundException
-    {
-        Users users = usersRepository.getById(id);
-        if(users == null) {
-            throw new UserNotFoundException("User with ID " + id + " not found.");
-        }
-
-        users.setName(userDTO.getName());
-        users.setDob(userDTO.getDob());
-        users.setGender(userDTO.getGender());
-        users.setPhone(userDTO.getPhone());
-        users.setEmail(userDTO.getEmail());
-        users.setAddress(userDTO.getAddress());
-        usersRepository.save(users);
-
         return userDTO;
     }
 

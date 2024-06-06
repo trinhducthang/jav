@@ -12,21 +12,16 @@ import java.util.Set;
 @Service
 public interface UserServices {
 
-    public List<Users> addUsers(List<Users> users);
 
     public List<Users> getALL();
 
     public boolean deleteUser(int id);
-
-    public Users editInfo(int id, Users users);
 
     public List<UserDTO> getuserdto();
 
     public UserDTO getUserById(int id);
 
     public UserDTO updateDto(int id, UserDTO userDTO);
-
-    public Set<BankDTO> getBankDto();
 
     public Users mapToEntity(UserDTO userDTO);
 
@@ -36,5 +31,5 @@ public interface UserServices {
 
     public Users addUser(Users user);
 
-    public UserDTO updateUser(UserDTO userDTO, int id);
+    public boolean checkOverlap(UserDTO userDTO);
 }

@@ -11,7 +11,6 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -26,7 +25,7 @@ public class UsersController {
     @Operation(summary = "summary", description = "Add Object", responses = {
             
     })
-    @PostMapping("/addDto")
+    @PostMapping("/add")
     public ResponseData<?> addUserDto(@Valid @RequestBody UserDTO userDTO) {
         try {
             Users user = userServices.mapToEntity(userDTO);
@@ -58,15 +57,15 @@ public class UsersController {
 
     @GetMapping("/search/{id}")
     public ResponseData<?> getUserById(@PathVariable int id){
-        try{
-            UserDTO user = userServices.getUserById(id);
-            if (user == null) {
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
-            }
-            return new ResponseData<>(HttpStatus.OK.value(), "GET SUCCESS", LocalDateTime.now(),userServices.getUserById(id));
+        try {
+            return new ResponseData<>(HttpStatus.OK.value(),
+                    "GET SUCCESS",
+                    LocalDateTime.now(),
+                    userServices.getUserById(id));
+
         }
         catch (Exception e){
-            return new ResponseData<>(HttpStatus.NOT_FOUND.value(), "e.getMessage()", LocalDateTime.now());
+            return new ResponseData<>(HttpStatus.NOT_FOUND.value(), e.getMessage());
         }
     }
 
