@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -80,6 +81,12 @@ public class UsersController {
         }
     }
 
-
+    @GetMapping("/checkOverlap")
+    public ResponseData<?> checkOverlap(@RequestBody UserDTO userDTO){
+        if (userServices.checkOverlap(userDTO)){
+            return new ResponseData<>(HttpStatus.OK.value(),"Not Overlap");
+        }
+        return new ResponseData(HttpStatus.BAD_REQUEST.value(),"Overlap");
+    }
 
 }
