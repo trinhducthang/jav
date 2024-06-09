@@ -2,6 +2,7 @@ package com.java1504.ManagerUsers.service.impl;
 
 import com.java1504.ManagerUsers.dto.BankDTO;
 import com.java1504.ManagerUsers.dto.UserDTO;
+import com.java1504.ManagerUsers.mapper.Mapper;
 import com.java1504.ManagerUsers.model.Bank;
 import com.java1504.ManagerUsers.repository.UsersRepository;
 import com.java1504.ManagerUsers.model.Users;
@@ -10,37 +11,40 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Service
 public class UserServicesImpl implements UserServices {
+
+
+    private Mapper mapper = new Mapper();
+
     @Autowired
     private UsersRepository usersRepository;
 
 
-    public Users addUser(Users user){
-        return usersRepository.save(user);
+    public Users addUser(UserDTO userDTO){
+
+        if(checkOverlap(userDTO)){
+            Users users = mapper.mapToEntity(userDTO);
+            return usersRepository.save(users);
+        }
+        else{
+            throw new RuntimeException("user da ton tai");
+        }
     }
 
     @Override
     public boolean checkOverlap(UserDTO userDTO) {
         List<Users> users = usersRepository.findAll();
-        for (Users users1 : users){
-            if(userDTO.getName().equals(users1.getName())
-            && userDTO.getDob().equals(users1.getDob())
-            && userDTO.getAddress().equals(users1.getAddress())){
+        for(Users users1 : users){
+            if(usersRepository.existsByNameAndAddressAndDob(users1.getName(),users1.getAddress(),users1.getDob())){
                 return false;
             }
         }
         return true;
     }
 
-
-    public List<Users> getALL(){
-        return usersRepository.findAll();
-    }
 
     public boolean deleteUser(int id){
         Users users = usersRepository.getById(id);
@@ -69,63 +73,27 @@ public class UserServicesImpl implements UserServices {
         List<Users> users = usersRepository.findAll();
         List<UserDTO> userDTOs = new ArrayList<>();
         for(Users user : users)
-            userDTOs.add(mapToDto(user));
+            userDTOs.add(mapper.mapToDto(user));
         return userDTOs;
     }
 
     @Override
     public UserDTO getUserById(int id) {
         Users users = usersRepository.findById(id).orElseThrow(() -> new RuntimeException("user khong ton tai"));
-        return mapToDto(users);
+        return mapper.mapToDto(users);
     }
 
-    public Users mapToEntity(UserDTO userDTO){
-        Users users = new Users();
-        users.setId(userDTO.getId());
-        users.setName(userDTO.getName());
-        users.setDob(userDTO.getDob());
-        users.setGender(userDTO.getGender());
-        users.setPhone(userDTO.getPhone());
-        users.setEmail(userDTO.getEmail());
-        users.setAddress(userDTO.getAddress());
-        return users;
-    }
 
-    public BankDTO mapToDto(Bank bank){
-        BankDTO bankDTO = new BankDTO();
-        bankDTO.setId(bank.getId());
-        bankDTO.setNameBank(bank.getName());
-        bankDTO.setNumberBank(bank.getNumberbank());
-        bankDTO.setUsersId(bank.getUsers().getId());
-        return bankDTO;
-    }
-
-    public UserDTO mapToDto(Users users){
-        UserDTO userDTO = new UserDTO();
-        userDTO.setId(users.getId());
-        userDTO.setName(users.getName());
-        userDTO.setDob(users.getDob());
-        userDTO.setGender(users.getGender());
-        userDTO.setPhone(users.getPhone());
-        userDTO.setEmail(users.getEmail());
-        userDTO.setAddress(users.getAddress());
-        return userDTO;
-    }
-
-    public Bank mapToEntity (BankDTO bankDTO){
-        Bank bank = new Bank();
-        bank.setId(bankDTO.getId());
-        bank.setName(bankDTO.getNameBank());
-        bank.setNumberbank(bankDTO.getNumberBank());
-        return bank;
-    }
-
-    public UserDTO updateDto(int id, UserDTO userDTO){
+    public Users updateUser(int id, UserDTO userDTO){
         Users users = usersRepository.getById(id);
         userDTO.setId(id);
-        users = mapToEntity(userDTO);
-        usersRepository.save(users);
-        return userDTO;
+        if(checkOverlap(userDTO)){
+            users = mapper.mapToEntity(userDTO);
+            return usersRepository.save(users);
+        }
+        else{
+            throw new RuntimeException("user da ton tai");
+        }
     }
 
 

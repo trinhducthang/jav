@@ -4,7 +4,6 @@ package com.java1504.ManagerUsers.controller;
 import com.java1504.ManagerUsers.dto.UserDTO;
 import com.java1504.ManagerUsers.response.ResponseData;
 import com.java1504.ManagerUsers.service.UserServices;
-import com.java1504.ManagerUsers.model.Users;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
@@ -13,7 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -27,23 +25,15 @@ public class UsersController {
             
     })
     @PostMapping("/add")
-    public ResponseData<?> addUserDto(@Valid @RequestBody UserDTO userDTO) {
+    public ResponseData<?> addUser(@Valid @RequestBody UserDTO userDTO) {
         try {
-            Users user = userServices.mapToEntity(userDTO);
-            userServices.addUser(user);
-            return new ResponseData<>(HttpStatus.CREATED.value(), "User added successfully", LocalDateTime.now(), user);
+            userServices.addUser(userDTO);
+            return new ResponseData<>(HttpStatus.CREATED.value(), "User added successfully", LocalDateTime.now(), userDTO);
         }
         catch (Exception e){
-            return new ResponseData<>(HttpStatus.BAD_REQUEST.value(), e.getMessage(), LocalDateTime.now());
+            return new ResponseData<>(HttpStatus.BAD_REQUEST.value(), e.getMessage());
         }
     }
-
-    @GetMapping
-    @ResponseStatus(HttpStatus.OK)
-    public List<Users> getAll(){
-        return userServices.getALL();
-    }
-
     @DeleteMapping("delete/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
         public boolean deleteUser(@PathVariable int id){
@@ -73,20 +63,13 @@ public class UsersController {
     @PutMapping("/updateUser/{id}")
     public ResponseData<?> updateUser(@RequestBody UserDTO userDTO,@PathVariable int id){
         try {
-            return new ResponseData<>(HttpStatus.OK.value(), "UPDATE SUCCESS", LocalDateTime.now(),userServices.updateDto(id,userDTO));
+            return new ResponseData<>(HttpStatus.OK.value(), "UPDATE SUCCESS", LocalDateTime.now(),userServices.updateUser( id,userDTO));
 
         }
-        catch (EntityNotFoundException e){
-            return new ResponseData<>(HttpStatus.BAD_REQUEST.value(), e.getMessage(), LocalDateTime.now());
+        catch (RuntimeException e){
+            return new ResponseData<>(HttpStatus.BAD_REQUEST.value(), e.getMessage());
         }
     }
 
-    @GetMapping("/checkOverlap")
-    public ResponseData<?> checkOverlap(@RequestBody UserDTO userDTO){
-        if (userServices.checkOverlap(userDTO)){
-            return new ResponseData<>(HttpStatus.OK.value(),"Not Overlap");
-        }
-        return new ResponseData(HttpStatus.BAD_REQUEST.value(),"Overlap");
-    }
 
 }

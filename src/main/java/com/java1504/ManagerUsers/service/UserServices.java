@@ -13,23 +13,15 @@ import java.util.Set;
 public interface UserServices {
 
 
-    public List<Users> getALL();
-
     public boolean deleteUser(int id);
 
     public List<UserDTO> getuserdto();
 
     public UserDTO getUserById(int id);
 
-    public UserDTO updateDto(int id, UserDTO userDTO);
+    public Users updateUser(int id, UserDTO userDTO);
 
-    public Users mapToEntity(UserDTO userDTO);
-
-    public BankDTO mapToDto(Bank bank);
-
-    public Bank mapToEntity(BankDTO bankDTO);
-
-    public Users addUser(Users user);
+    public Users addUser(UserDTO userDTO);
 
     public boolean checkOverlap(UserDTO userDTO);
 }

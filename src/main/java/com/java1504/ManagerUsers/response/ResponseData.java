@@ -1,9 +1,11 @@
 package com.java1504.ManagerUsers.response;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @Data
 public class ResponseData<T> {
     private final int status;

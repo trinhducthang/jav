@@ -1,6 +1,7 @@
 package com.java1504.ManagerUsers.service.impl;
 
 import com.java1504.ManagerUsers.dto.BankDTO;
+import com.java1504.ManagerUsers.mapper.Mapper;
 import com.java1504.ManagerUsers.model.Bank;
 import com.java1504.ManagerUsers.model.Users;
 import com.java1504.ManagerUsers.repository.BanksRepository;
@@ -15,6 +16,9 @@ import java.util.List;
 
 @Service
 public class BankServiceImpl implements BankServices {
+
+    private Mapper mapper;
+
     @Autowired
     private BanksRepository banksRepository;
 
@@ -36,7 +40,7 @@ public class BankServiceImpl implements BankServices {
         List<Bank> banks = banksRepository.findAll();
         List<BankDTO> bankDTOs = new ArrayList<>();
         for (Bank bank : banks) {
-            bankDTOs.add(userServices.mapToDto(bank));
+            bankDTOs.add(mapper.mapToDto(bank));
         }
         return bankDTOs;
     }
