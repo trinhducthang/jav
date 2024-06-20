@@ -15,11 +15,11 @@ public interface UserServices {
 
     public boolean deleteUser(int id);
 
-    public List<UserDTO> getuserdto();
+    public List<UserDTO> getUserDto();
 
     public UserDTO getUserById(int id);
 
-    public Users updateUser(int id, UserDTO userDTO);
+    public Users updateUser(Integer id, UserDTO userDTO);
 
     public Users addUser(UserDTO userDTO);
 

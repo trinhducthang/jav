@@ -2,10 +2,10 @@ package com.java1504.ManagerUsers.controller;
 
 
 import com.java1504.ManagerUsers.dto.UserDTO;
+import com.java1504.ManagerUsers.model.Users;
 import com.java1504.ManagerUsers.response.ResponseData;
 import com.java1504.ManagerUsers.service.UserServices;
 import io.swagger.v3.oas.annotations.Operation;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -28,22 +28,29 @@ public class UsersController {
     public ResponseData<?> addUser(@Valid @RequestBody UserDTO userDTO) {
         try {
             userServices.addUser(userDTO);
-            return new ResponseData<>(HttpStatus.CREATED.value(), "User added successfully", LocalDateTime.now(), userDTO);
+            return new ResponseData<>(HttpStatus.CREATED.value(),
+                    "User added successfully",
+                    LocalDateTime.now(),
+                    userDTO);
         }
         catch (Exception e){
             return new ResponseData<>(HttpStatus.BAD_REQUEST.value(), e.getMessage());
         }
     }
     @DeleteMapping("delete/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-        public boolean deleteUser(@PathVariable int id){
-            return userServices.deleteUser(id);
+        public ResponseData<?> deleteUser(@PathVariable int id){
+            try {
+                return new ResponseData<>(HttpStatus.OK.value(),"Xoa thanh cong",LocalDateTime.now(),userServices.deleteUser(id));
+            }
+            catch (RuntimeException e){
+                return new ResponseData<>(HttpStatus.BAD_REQUEST.value(), e.getMessage());
+            }
     }
 
 
     @GetMapping("/user")
-    public List<UserDTO> getUserDto(){
-        return userServices.getuserdto();
+    public List<UserDTO> getUser(){
+        return userServices.getUserDto();
     }
 
     @GetMapping("/search/{id}")
@@ -56,12 +63,13 @@ public class UsersController {
 
         }
         catch (Exception e){
-            return new ResponseData<>(HttpStatus.NOT_FOUND.value(), e.getMessage());
+            return new ResponseData<>(HttpStatus.NOT_FOUND.value(),
+                    e.getMessage());
         }
     }
 
     @PutMapping("/updateUser/{id}")
-    public ResponseData<?> updateUser(@RequestBody UserDTO userDTO,@PathVariable int id){
+    public ResponseData<?> updateUser(@RequestBody UserDTO userDTO,@PathVariable Integer     id){
         try {
             return new ResponseData<>(HttpStatus.OK.value(), "UPDATE SUCCESS", LocalDateTime.now(),userServices.updateUser( id,userDTO));
 

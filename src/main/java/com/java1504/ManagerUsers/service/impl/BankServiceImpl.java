@@ -17,7 +17,7 @@ import java.util.List;
 @Service
 public class BankServiceImpl implements BankServices {
 
-    private Mapper mapper;
+    private Mapper mapper = new Mapper();
 
     @Autowired
     private BanksRepository banksRepository;
@@ -31,8 +31,11 @@ public class BankServiceImpl implements BankServices {
     @Override
     public Bank addBank(Bank bank, int id) {
         Users users = usersRepository.findById(id).get();
-        bank.setUsers(users);
-        return banksRepository.save(bank);
+        if(checkOverlap(bank)){
+            bank.setUsers(users);
+            return banksRepository.save(bank);
+        }
+        throw new RuntimeException("Bank exist with id " + id);
     }
 
     @Override
@@ -43,6 +46,24 @@ public class BankServiceImpl implements BankServices {
             bankDTOs.add(mapper.mapToDto(bank));
         }
         return bankDTOs;
+    }
+
+    @Override
+    public Bank updateBank(BankDTO bankDTO, int id) {
+        Bank bank = banksRepository.findById(id).orElseThrow(()->new RuntimeException("Bank not found"));
+        bank.setBankNumber(bankDTO.getBankNumber());
+        bank.setName(bank.getName());
+        return banksRepository.save(bank);
+    }
+
+    public boolean checkOverlap(Bank bank) {
+        List<Bank> banks = banksRepository.findAll();
+        for (Bank bank1 : banks) {
+            if(bank.getBankNumber().equals(bank1.getBankNumber()) && bank1.getName().equals(bank.getName())) {
+                return false;
+            }
+        }
+        return true;
     }
 
 

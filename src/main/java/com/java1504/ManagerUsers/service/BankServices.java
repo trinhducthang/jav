@@ -11,4 +11,6 @@ public interface BankServices {
     public Bank addBank(Bank bank, int id);
 
     public List<BankDTO> getBanks();
+
+    public Bank updateBank(BankDTO bankDTO, int id);
 }

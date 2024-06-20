@@ -3,9 +3,11 @@ package com.java1504.ManagerUsers.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
+import lombok.Data;
 
 @Table
 @Entity
+@Data
 public class Bank {
 
     @Id
@@ -19,51 +21,20 @@ public class Bank {
     private Users users;
 
     @Column
-    private String numberbank;
+    private String bankNumber;
 
 
     @Column
-    private String Name;
+    private String name;
 
-    public Users getUsers() {
-        return users;
-    }
-
-    public void setUsers(Users users) {
-        this.users = users;
-    }
 
     public Bank() {
     }
 
-    public Bank(int id, String numberbank, String name) {
+    public Bank(int id, String bankNumber, String name) {
         Id = id;
-        this.numberbank = numberbank;
-        Name = name;
-    }
-
-    public int getId() {
-        return Id;
-    }
-
-    public void setId(int id) {
-        Id = id;
-    }
-
-    public String getNumberbank() {
-        return numberbank;
-    }
-
-    public void setNumberbank(String numberbank) {
-        this.numberbank = numberbank;
-    }
-
-    public String getName() {
-        return Name;
-    }
-
-    public void setName(String name) {
-        Name = name;
+        this.bankNumber = bankNumber;
+        this.name = name;
     }
 
 }

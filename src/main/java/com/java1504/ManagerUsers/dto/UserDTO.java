@@ -13,6 +13,10 @@ import lombok.NoArgsConstructor;
 public class UserDTO {
     private int id;
 
+    private String username;
+
+    private String password;
+
     @NotBlank(message = "The name cannot leave empty")
     private String name;
 
@@ -25,7 +29,7 @@ public class UserDTO {
     @NotNull
     private String phone;
 
-    @Email(message = "Vui long nhap dung dinh dang email")
+    @Email(message = "Please config your email!")
     private String email;
 
     @NotNull
