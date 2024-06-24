@@ -3,8 +3,9 @@ package com.java1504.ManagerUsers.controller;
 
 import com.java1504.ManagerUsers.request.AuthenticationRequest;
 import com.java1504.ManagerUsers.request.IntrospectRequest;
-import com.java1504.ManagerUsers.response.AuthenticationResponse;
-import com.java1504.ManagerUsers.response.ResponseData;
+import com.java1504.ManagerUsers.dto.response.ApiResponse;
+import com.java1504.ManagerUsers.dto.response.AuthenticationResponse;
+import com.java1504.ManagerUsers.dto.response.IntrospectResponse;
 import com.java1504.ManagerUsers.service.AuthenticationService;
 import com.nimbusds.jose.JOSEException;
 import lombok.*;
@@ -24,22 +25,45 @@ import java.text.ParseException;
 public class AuthenticationController {
     AuthenticationService authenticationService;
 
-    @PostMapping("/login")
-    ResponseData<AuthenticationResponse> authenticate(@RequestBody AuthenticationRequest request){
+
+    @PostMapping("/token")
+    ApiResponse<AuthenticationResponse> authenticate(@RequestBody AuthenticationRequest request) {
         try {
+            // Call the authentication service to authenticate the request
             var result = authenticationService.authenticate(request);
-            String s = result.getToken();
-            return new ResponseData<>(HttpStatus.ACCEPTED.value(),s);
-        }
-        catch (RuntimeException e){
-            return new ResponseData<>(HttpStatus.BAD_REQUEST.value(), e.getMessage());
+
+            // Build ApiResponse with result
+            return ApiResponse.<AuthenticationResponse>builder()
+                    .code(HttpStatus.OK.value())
+                    .message("Authentication successful")
+                    .result(result)
+                    .build();
+        } catch (RuntimeException e) {
+            // Handle any runtime exceptions
+            return ApiResponse.<AuthenticationResponse>builder()
+                    .code(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                    .message("Authentication failed: " + e.getMessage())
+                    .build();
         }
     }
 
     @PostMapping("/introspect")
-    ResponseData<AuthenticationResponse> authenticate(@RequestBody IntrospectRequest request) throws ParseException, JOSEException {
-        var result = authenticationService.introspect(request);
-        String s = String.valueOf(result);
-        return new ResponseData<>(HttpStatus.ACCEPTED.value(),s);
+    ApiResponse<IntrospectResponse> authenticate(@RequestBody IntrospectRequest request)
+            throws ParseException, JOSEException {
+        try {
+            var result = authenticationService.introspect(request);
+            return ApiResponse.<IntrospectResponse>builder()
+                    .code(HttpStatus.OK.value())
+                    .result(result)
+                    .build();
+        }
+        catch (RuntimeException e){
+
+            return ApiResponse.<IntrospectResponse>builder()
+                    .code(HttpStatus.BAD_REQUEST.value())
+                    .build();
+        }
     }
+
+
 }

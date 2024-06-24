@@ -1,4 +1,4 @@
-package com.java1504.ManagerUsers.response;
+package com.java1504.ManagerUsers.dto.response;
 
 
 import lombok.*;

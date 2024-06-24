@@ -2,20 +2,25 @@ package com.java1504.ManagerUsers.service.impl;
 
 
 import com.java1504.ManagerUsers.dto.UserDTO;
+import com.java1504.ManagerUsers.enums.Role;
 import com.java1504.ManagerUsers.mapper.Mapper;
 import com.java1504.ManagerUsers.repository.UsersRepository;
 import com.java1504.ManagerUsers.model.Users;
 import com.java1504.ManagerUsers.service.UserServices;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 
 @Service
+@Slf4j
 public class UserServicesImpl implements UserServices {
 
 
@@ -42,7 +47,7 @@ public class UserServicesImpl implements UserServices {
     public boolean checkOverlap(UserDTO userDTO) {
         List<Users> users = usersRepository.findAll();
         for(Users users1 : users){
-            if(users1.getPhone().equals(userDTO.getPhone())){
+            if(users1.getUsername().equals(userDTO.getUsername())){
                 return false;
             }
 
@@ -58,8 +63,10 @@ public class UserServicesImpl implements UserServices {
     }
 
 
+
     @Override
-    public List<UserDTO> getUserDto() {
+    public List<UserDTO> getUser() {
+        log.info("get User ");
         List<Users> users = usersRepository.findAll();
         List<UserDTO> userDTOs = new ArrayList<>();
         for(Users user : users)

@@ -2,8 +2,7 @@ package com.java1504.ManagerUsers.controller;
 
 
 import com.java1504.ManagerUsers.dto.UserDTO;
-import com.java1504.ManagerUsers.model.Users;
-import com.java1504.ManagerUsers.response.ResponseData;
+import com.java1504.ManagerUsers.dto.response.ResponseData;
 import com.java1504.ManagerUsers.service.UserServices;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
@@ -50,7 +49,7 @@ public class UsersController {
 
     @GetMapping("/user")
     public List<UserDTO> getUser(){
-        return userServices.getUserDto();
+        return userServices.getUser();
     }
 
     @GetMapping("/search/{id}")

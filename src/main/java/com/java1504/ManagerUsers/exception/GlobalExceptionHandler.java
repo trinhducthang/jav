@@ -41,11 +41,4 @@ public class GlobalExceptionHandler {
     public ErrorResponse halderNotFoundExeption(Exception e, WebRequest request){
         return new ErrorResponse(HttpStatus.NOT_FOUND.value(),e.getMessage());
     }
-
-    @ExceptionHandler(EntityNotFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse halderEntityNotFoundExeption(EntityNotFoundException e, WebRequest request){
-        return new ErrorResponse(HttpStatus.NOT_FOUND.value(),e.getMessage());
-    }
-
 }

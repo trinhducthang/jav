@@ -3,7 +3,7 @@ package com.java1504.ManagerUsers.controller;
 
 import com.java1504.ManagerUsers.dto.BankDTO;
 import com.java1504.ManagerUsers.model.Bank;
-import com.java1504.ManagerUsers.response.ResponseData;
+import com.java1504.ManagerUsers.dto.response.ResponseData;
 import com.java1504.ManagerUsers.service.BankServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

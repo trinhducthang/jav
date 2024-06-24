@@ -11,7 +11,6 @@ public class Mapper {
 
     public Users mapToEntity(UserDTO userDTO){
         Users users = new Users();
-        users.setId(userDTO.getId());
         users.setUsername(userDTO.getUsername());
         users.setPassword(userDTO.getPassword());
         users.setName(userDTO.getName());
@@ -20,7 +19,7 @@ public class Mapper {
         users.setPhone(userDTO.getPhone());
         users.setEmail(userDTO.getEmail());
         users.setAddress(userDTO.getAddress());
-
+        users.setRole(userDTO.getRole());
         return users;
     }
 
@@ -34,7 +33,6 @@ public class Mapper {
 
     public UserDTO mapToDto(Users users){
         UserDTO userDTO = new UserDTO();
-        userDTO.setId(users.getId());
         userDTO.setName(users.getName());
         userDTO.setDob(users.getDob());
         userDTO.setGender(users.getGender());
@@ -43,6 +41,7 @@ public class Mapper {
         userDTO.setAddress(users.getAddress());
         userDTO.setUsername(users.getUsername());
         userDTO.setPassword(users.getPassword());
+        userDTO.setRole(users.getRole());
         return userDTO;
     }
 

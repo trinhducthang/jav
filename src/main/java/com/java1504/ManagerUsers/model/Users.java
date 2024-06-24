@@ -2,14 +2,14 @@ package com.java1504.ManagerUsers.model;
 
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.java1504.ManagerUsers.enums.Role;
 import com.java1504.ManagerUsers.ultil.Gender;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 
-import java.util.List;
+
 import java.util.Set;
 
 @Entity
@@ -17,35 +17,25 @@ import java.util.Set;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
+@Builder
 public class Users {
 
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    int id;
 
-    private String username;
+    String username;
+    String password;
+    String name;
+    String dob;
+    Gender gender;
+    String phone;
+    String email;
+    String address;
 
-    private String password;
-
-
-    private String name;
-
-
-    private String dob;
-
-
-    public Gender gender;
-
-
-    private String phone;
-
-
-    private String email;
-
-
-    private String address;
-
+    Role role;
 
     @OneToMany(mappedBy = "users",cascade = CascadeType.DETACH)
     @JsonManagedReference

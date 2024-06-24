@@ -1,11 +1,12 @@
 package com.java1504.ManagerUsers.service;
 
 
+import com.java1504.ManagerUsers.model.Users;
 import com.java1504.ManagerUsers.repository.UsersRepository;
 import com.java1504.ManagerUsers.request.AuthenticationRequest;
 import com.java1504.ManagerUsers.request.IntrospectRequest;
-import com.java1504.ManagerUsers.response.AuthenticationResponse;
-import com.java1504.ManagerUsers.response.IntrospectResponse;
+import com.java1504.ManagerUsers.dto.response.AuthenticationResponse;
+import com.java1504.ManagerUsers.dto.response.IntrospectResponse;
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.MACVerifier;
@@ -17,14 +18,18 @@ import lombok.experimental.FieldDefaults;
 import lombok.experimental.NonFinal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.text.ParseException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.Collections;
 import java.util.Date;
+import java.util.StringJoiner;
 
 @Service
 @RequiredArgsConstructor
@@ -34,8 +39,8 @@ public class AuthenticationService {
     UsersRepository usersRepository;
 
     @NonFinal
-    protected static final String SINGER_KEY =
-            "T8n9uQUag43p2EysKjWcCZwvU32GcvIDAyRmZQSIjFRlJy7KjnsFGOmfUA15cK1c\n";
+    @Value("${jwt.signerKey}")
+    protected String SINGER_KEY;
 
     public IntrospectResponse introspect(IntrospectRequest request) throws ParseException, JOSEException {
         var token = request.getToken();
@@ -48,9 +53,19 @@ public class AuthenticationService {
 
         var verify = signedJWT.verify(jwsVerifier);
 
+        String str;
+
+        if(verify){
+            str = "OK";
+        }
+        else{
+            str = "NOT";
+        }
+
         return IntrospectResponse.builder()
                 .valid(
                         verify && expityTime.after(new Date()))
+                .message(str)
                 .build();
     }
 
@@ -65,7 +80,7 @@ public class AuthenticationService {
         if(!authenticated)
             throw new RuntimeException("KHONG HOP LE!");
 
-        var token = generateToken(request.getUsername());
+        var token = generateToken(user);
 
         return AuthenticationResponse.builder()
                 .token(token)
@@ -77,17 +92,17 @@ public class AuthenticationService {
 
 
 
-    private String generateToken(String username){
+    private String generateToken(Users users){
         JWSHeader jwsHeader = new JWSHeader(JWSAlgorithm.HS512);
 
         JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()
-                .subject(username)
-                .issuer("ducthang.com")
+                .subject(users.getUsername())
+                .issuer("ducthang")
                 .issueTime(new Date())
                 .expirationTime(new Date(
                         Instant.now().plus(1, ChronoUnit.HOURS).toEpochMilli()
                 ))
-                .claim("customClaim","Custom")
+                .claim("scope",users.getRole())
                 .build();
 
         Payload payload = new Payload(jwtClaimsSet.toJSONObject());
@@ -103,4 +118,5 @@ public class AuthenticationService {
             throw new RuntimeException(e);
         }
     }
+
 }

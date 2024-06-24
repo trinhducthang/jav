@@ -62,11 +62,6 @@
 			<version>2.3.0</version>
 		</dependency>
 
-<!--		<dependency>-->
-<!--			<groupId>org.springdoc</groupId>-->
-<!--			<artifactId>springdoc-openapi-ui</artifactId>-->
-<!--			<version>1.6.9</version> &lt;!&ndash; Use the latest version available &ndash;&gt;-->
-<!--		</dependency>-->
 
 		<dependency>
 			<groupId>org.springdoc</groupId>
@@ -89,6 +84,14 @@
 			<artifactId>nimbus-jose-jwt</artifactId>
 			<version>9.22</version> <!-- Use the latest version available -->
 		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
+		</dependency>
+
+
+
 
 	</dependencies>
 

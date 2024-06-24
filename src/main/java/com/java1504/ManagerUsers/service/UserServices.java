@@ -4,6 +4,8 @@ import com.java1504.ManagerUsers.dto.BankDTO;
 import com.java1504.ManagerUsers.dto.UserDTO;
 import com.java1504.ManagerUsers.model.Bank;
 import com.java1504.ManagerUsers.model.Users;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,8 +17,10 @@ public interface UserServices {
 
     public boolean deleteUser(int id);
 
-    public List<UserDTO> getUserDto();
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public List<UserDTO> getUser();
 
+    @PostAuthorize("returnObject.username == authentication.name")
     public UserDTO getUserById(int id);
 
     public Users updateUser(Integer id, UserDTO userDTO);

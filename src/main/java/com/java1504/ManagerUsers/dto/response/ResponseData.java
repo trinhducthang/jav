@@ -1,4 +1,4 @@
-package com.java1504.ManagerUsers.response;
+package com.java1504.ManagerUsers.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
@@ -17,7 +17,6 @@ public class ResponseData<T> {
 
     public ResponseData(int status, String message, LocalDateTime localDateTime) {
         this.status = status;
-
         this.localDateTime = localDateTime;
         int start = message.indexOf("[");
         int end = message.lastIndexOf("]");
