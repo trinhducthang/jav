@@ -11,4 +11,5 @@ public class BankDTO {
     private String bankName;
     private String bankNumber;
     private int usersId;
+    private long balance;
 }

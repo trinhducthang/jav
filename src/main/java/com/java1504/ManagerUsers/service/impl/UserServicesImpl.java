@@ -9,6 +9,7 @@ import com.java1504.ManagerUsers.model.Users;
 import com.java1504.ManagerUsers.service.UserServices;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -36,6 +37,7 @@ public class UserServicesImpl implements UserServices {
             Users users = mapper.mapToEntity(userDTO);
             PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
             users.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+            users.setRole(Role.USER);
             return usersRepository.save(users);
         }
         else{
@@ -55,7 +57,7 @@ public class UserServicesImpl implements UserServices {
         return true;
     }
 
-
+    @PostAuthorize("returnObject.username == authentication.name")
     public boolean deleteUser(int id){
         Users users = usersRepository.findById(id).orElseThrow(() -> new RuntimeException("user not found"));
         usersRepository.delete(users);

@@ -17,7 +17,6 @@ public interface UserServices {
 
     public boolean deleteUser(int id);
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public List<UserDTO> getUser();
 
     @PostAuthorize("returnObject.username == authentication.name")

@@ -7,9 +7,11 @@ import com.java1504.ManagerUsers.ultil.Gender;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.hibernate.annotations.CreationTimestamp;
 
 
-
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Set;
 
 @Entity
@@ -36,6 +38,9 @@ public class Users {
     String address;
 
     Role role;
+    @CreationTimestamp
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private LocalDateTime createdAt;
 
     @OneToMany(mappedBy = "users",cascade = CascadeType.DETACH)
     @JsonManagedReference

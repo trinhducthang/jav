@@ -7,6 +7,7 @@ import com.java1504.ManagerUsers.dto.response.ResponseData;
 import com.java1504.ManagerUsers.service.BankServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -30,9 +31,15 @@ public class BanksController {
 
     @GetMapping("/getBanks")
     public ResponseData<?> getAllBanks() {
-        return new ResponseData<>(HttpStatus.OK.value(), "get All Banks", LocalDateTime.now(),bankServices.getBanks());
+        try {
+            return new ResponseData<>(HttpStatus.OK.value(), "get All Banks", LocalDateTime.now(),bankServices.getBanks());
+        }
+        catch (Exception e){
+            return new ResponseData<>(HttpStatus.BAD_REQUEST.value(), e.getMessage());
+        }
     }
 
+    
     @PutMapping("/updateBank/{id}")
     public ResponseData<?> updateBank(@RequestBody BankDTO bankDTO, @PathVariable int id) {
         try {

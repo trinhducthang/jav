@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -36,13 +37,15 @@ public class UsersController {
             return new ResponseData<>(HttpStatus.BAD_REQUEST.value(), e.getMessage());
         }
     }
+
+
     @DeleteMapping("delete/{id}")
         public ResponseData<?> deleteUser(@PathVariable int id){
             try {
                 return new ResponseData<>(HttpStatus.OK.value(),"Xoa thanh cong",LocalDateTime.now(),userServices.deleteUser(id));
             }
             catch (RuntimeException e){
-                return new ResponseData<>(HttpStatus.BAD_REQUEST.value(), e.getMessage());
+                return new ResponseData<>(HttpStatus.BAD_REQUEST.value(), e.getMessage() + " Xoa khong thanh cong");
             }
     }
 

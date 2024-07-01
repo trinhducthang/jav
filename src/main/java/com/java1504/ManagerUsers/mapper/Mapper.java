@@ -28,6 +28,7 @@ public class Mapper {
         bankDTO.setBankName(bank.getName());
         bankDTO.setBankNumber(bank.getBankNumber());
         bankDTO.setUsersId(bank.getUsers().getId());
+        bankDTO.setBalance(bank.getBalance());
         return bankDTO;
     }
 
@@ -42,6 +43,7 @@ public class Mapper {
         userDTO.setUsername(users.getUsername());
         userDTO.setPassword(users.getPassword());
         userDTO.setRole(users.getRole());
+        userDTO.setCreate_at(users.getCreatedAt());
         return userDTO;
     }
 
