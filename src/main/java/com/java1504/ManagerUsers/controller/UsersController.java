@@ -42,10 +42,10 @@ public class UsersController {
     @DeleteMapping("delete/{id}")
         public ResponseData<?> deleteUser(@PathVariable int id){
             try {
-                return new ResponseData<>(HttpStatus.OK.value(),"Xoa thanh cong",LocalDateTime.now(),userServices.deleteUser(id));
+                return new ResponseData<>(HttpStatus.OK.value(),"Delete successfully",LocalDateTime.now(),userServices.deleteUser(id));
             }
             catch (RuntimeException e){
-                return new ResponseData<>(HttpStatus.BAD_REQUEST.value(), e.getMessage() + " Xoa khong thanh cong");
+                return new ResponseData<>(HttpStatus.BAD_REQUEST.value(), e.getMessage() + "Delete failed");
             }
     }
 
@@ -73,7 +73,7 @@ public class UsersController {
     @PutMapping("/updateUser/{id}")
     public ResponseData<?> updateUser(@RequestBody UserDTO userDTO,@PathVariable Integer     id){
         try {
-            return new ResponseData<>(HttpStatus.OK.value(), "UPDATE SUCCESS", LocalDateTime.now(),userServices.updateUser( id,userDTO));
+            return new ResponseData<>(HttpStatus.OK.value(), "Update success", LocalDateTime.now(),userServices.updateUser( id,userDTO));
 
         }
         catch (RuntimeException e){

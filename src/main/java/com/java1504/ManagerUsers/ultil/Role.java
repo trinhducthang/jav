@@ -1,4 +1,4 @@
-package com.java1504.ManagerUsers.enums;
+package com.java1504.ManagerUsers.ultil;
 
 public enum Role {
     ADMIN,

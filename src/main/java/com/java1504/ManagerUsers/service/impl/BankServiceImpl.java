@@ -1,7 +1,7 @@
 package com.java1504.ManagerUsers.service.impl;
 
 import com.java1504.ManagerUsers.dto.BankDTO;
-import com.java1504.ManagerUsers.mapper.Mapper;
+import com.java1504.ManagerUsers.mapper.BankMapper;
 import com.java1504.ManagerUsers.model.Bank;
 import com.java1504.ManagerUsers.model.Users;
 import com.java1504.ManagerUsers.repository.BanksRepository;
@@ -17,7 +17,8 @@ import java.util.List;
 @Service
 public class BankServiceImpl implements BankServices {
 
-    private Mapper mapper = new Mapper();
+    @Autowired
+    private BankMapper bankMapper;
 
     @Autowired
     private BanksRepository banksRepository;
@@ -43,7 +44,7 @@ public class BankServiceImpl implements BankServices {
         List<Bank> banks = banksRepository.findAll();
         List<BankDTO> bankDTOs = new ArrayList<>();
         for (Bank bank : banks) {
-            bankDTOs.add(mapper.mapToDto(bank));
+            bankDTOs.add(bankMapper.INSTANCE.bankToBankDTO(bank));
         }
         return bankDTOs;
     }
@@ -54,6 +55,21 @@ public class BankServiceImpl implements BankServices {
         bank.setBankNumber(bankDTO.getBankNumber());
         bank.setName(bank.getName());
         return banksRepository.save(bank);
+    }
+
+    @Override
+    public boolean bankTransaction(String source, String destination, long amount) {
+        Bank bank1 = banksRepository.findByBankNumber(source);
+        Bank bank2 = banksRepository.findByBankNumber(destination);
+        if(bank1 == null || bank2 == null) throw new RuntimeException("Bank not found");
+        if(bank1.getBalance() < amount) throw new RuntimeException("Insufficient funds");
+        else{
+            bank1.setBalance(bank1.getBalance() - amount);
+            bank2.setBalance(bank2.getBalance() + amount);
+            banksRepository.save(bank1);
+            banksRepository.save(bank2);
+            return true;
+        }
     }
 
     public boolean checkOverlap(Bank bank) {

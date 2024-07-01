@@ -11,6 +11,7 @@ import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 
 @RestController()
 public class BanksController {
@@ -44,6 +45,21 @@ public class BanksController {
     public ResponseData<?> updateBank(@RequestBody BankDTO bankDTO, @PathVariable int id) {
         try {
             return new ResponseData<>(HttpStatus.OK.value(), "Update successfully",LocalDateTime.now(),bankServices.updateBank(bankDTO, id));
+        }
+        catch (RuntimeException e){
+            return new ResponseData<>(HttpStatus.BAD_REQUEST.value(),e.getMessage());
+        }
+    }
+
+
+    @PostMapping("/transfer/{source}")
+    public ResponseData<?> bankTransaction(@PathVariable String source, @RequestBody Map<String, Object> transactionDetails){
+        try {
+            String destination = (String) transactionDetails.get("destination");
+            Number amountNumber = (Number) transactionDetails.get("amount");
+            long amount = amountNumber.longValue();
+            boolean success = bankServices.bankTransaction(source,destination,amount);
+            return new ResponseData<>(HttpStatus.OK.value(),String.valueOf(success));
         }
         catch (RuntimeException e){
             return new ResponseData<>(HttpStatus.BAD_REQUEST.value(),e.getMessage());

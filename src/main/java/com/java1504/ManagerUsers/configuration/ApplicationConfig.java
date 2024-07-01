@@ -1,6 +1,6 @@
 package com.java1504.ManagerUsers.configuration;
 
-import com.java1504.ManagerUsers.enums.Role;
+import com.java1504.ManagerUsers.ultil.Role;
 import com.java1504.ManagerUsers.model.Users;
 import com.java1504.ManagerUsers.repository.UsersRepository;
 import lombok.extern.slf4j.Slf4j;

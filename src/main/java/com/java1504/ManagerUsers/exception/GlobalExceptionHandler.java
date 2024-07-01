@@ -1,7 +1,6 @@
 package com.java1504.ManagerUsers.exception;
 
 
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -38,7 +37,9 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(UserNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse halderNotFoundExeption(Exception e, WebRequest request){
+    public ErrorResponse handlerNotFoundException(Exception e, WebRequest request){
         return new ErrorResponse(HttpStatus.NOT_FOUND.value(),e.getMessage());
     }
+
+
 }

@@ -4,4 +4,5 @@ import com.java1504.ManagerUsers.model.Bank;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface BanksRepository extends JpaRepository<Bank, Integer> {
+    public Bank findByBankNumber(String bankNumber);
 }

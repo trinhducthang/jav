@@ -13,4 +13,6 @@ public interface BankServices {
     public List<BankDTO> getBanks();
 
     public Bank updateBank(BankDTO bankDTO, int id);
+
+    public boolean bankTransaction(String source, String destination, long amount);
 }

@@ -2,7 +2,7 @@ package com.java1504.ManagerUsers.model;
 
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.java1504.ManagerUsers.enums.Role;
+import com.java1504.ManagerUsers.ultil.Role;
 import com.java1504.ManagerUsers.ultil.Gender;
 import jakarta.persistence.*;
 import lombok.*;
@@ -10,7 +10,6 @@ import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.CreationTimestamp;
 
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Set;
 
