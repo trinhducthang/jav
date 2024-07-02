@@ -28,7 +28,7 @@ import javax.crypto.spec.SecretKeySpec;
 public class SecurityConfig {
 
     private final String[] PUBLIC_ENDPOINTS = {
-            "/add", "/auth/token", "/auth/introspect","/addBank/{id}","/**"
+            "/add", "/auth/token", "/auth/introspect","/addBank/{id}","/v3/api-docs/**", "/swagger-ui.html", "/swagger-ui/**"
     };
 
     @Value("${jwt.signerKey}")
