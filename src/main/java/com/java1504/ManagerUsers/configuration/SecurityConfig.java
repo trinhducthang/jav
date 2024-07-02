@@ -28,7 +28,13 @@ import javax.crypto.spec.SecretKeySpec;
 public class SecurityConfig {
 
     private final String[] PUBLIC_ENDPOINTS = {
-            "/add", "/auth/token", "/auth/introspect","/addBank/{id}","/v3/api-docs/**", "/swagger-ui.html", "/swagger-ui/**"
+            "/add",
+            "/auth/token",
+            "/auth/introspect",
+            "/addBank/{id}",
+            "/v3/api-docs/**",
+            "/swagger-ui.html",
+            "/swagger-ui/**"
     };
 
     @Value("${jwt.signerKey}")
@@ -37,21 +43,24 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.authorizeHttpRequests(request ->
-                request.requestMatchers(HttpMethod.POST,PUBLIC_ENDPOINTS).permitAll()
-                        .requestMatchers(HttpMethod.GET,"user","/getBanks")
-                        .hasAuthority("ROLE_ADMIN")
-                        .anyRequest()
-                .authenticated());
+                request
+                        .requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS).permitAll()
+                        .requestMatchers(HttpMethod.GET, "/v3/api-docs/**", "/swagger-ui/**").permitAll() // Đảm bảo các endpoint GET của Swagger được phép truy cập
+                        .requestMatchers(HttpMethod.GET, "user", "/getBanks").hasAuthority("ROLE_ADMIN")
+                        .anyRequest().authenticated()
+        );
 
         httpSecurity.oauth2ResourceServer(oauth2 ->
-                oauth2.jwt(jwtConfigurer -> jwtConfigurer.decoder(jwtDecoder())
-                        .jwtAuthenticationConverter(jwtAuthenticationConverter()))
+                oauth2.jwt(jwtConfigurer ->
+                        jwtConfigurer.decoder(jwtDecoder())
+                                .jwtAuthenticationConverter(jwtAuthenticationConverter()))
         );
 
         httpSecurity.csrf(AbstractHttpConfigurer::disable);
 
         return httpSecurity.build();
     }
+
 
     @Bean
     JwtAuthenticationConverter jwtAuthenticationConverter(){
