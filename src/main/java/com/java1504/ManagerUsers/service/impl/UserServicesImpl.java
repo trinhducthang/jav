@@ -44,7 +44,7 @@ public class UserServicesImpl implements UserServices {
             return usersRepository.save(users);
         }
         else{
-            throw new RuntimeException("user da ton tai");
+            throw new RuntimeException("User was exist");
         }
     }
 

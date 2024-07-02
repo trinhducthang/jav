@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up | Your Application Name</title>
+    <style>
+        /* Basic styling */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        .container {
+            width: 400px;
+            margin: 50px auto;
+            padding: 30px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        /* Form styling */
+        form {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+
+        .form-group {
+            width: 48%;
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="password"],
+        input[type="email"],
+        input[type="tel"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        textarea {
+            height: 80px;
+        }
+
+        button[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            background-color: #3498db;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .already-registered {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .already-registered a {
+            color: #3498db;
+            text-decoration: none;
+        }
+
+        /* Error message styling */
+        .error-message {
+            color: red;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Create Your Account</h1>
+
+    <form action="/signup" method="POST" id="signup-form">
+        <div class="form-group">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" required>
+            <div class="error-message" id="name-error"></div>
+        </div>
+        <div class="form-group">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required>
+            <div class="error-message" id="username-error"></div>
+        </div>
+
+        <div class="form-group">
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+            <div class="error-message" id="password-error"></div>
+        </div>
+
+        <div class="form-group">
+            <label for="confirm-password">Confirm Password:</label>
+            <input type="password" id="confirm-password" name="confirm-password" required>
+            <div class="error-message" id="confirm-password-error"></div>
+        </div>
+
+
+
+        <div class="form-group">
+            <label for="dob">Date of Birth:</label>
+            <input type="date" id="dob" name="dob">
+            <div class="error-message" id="dob-error"></div>
+        </div>
+
+        <div class="form-group">
+            <label for="gender">Gender:</label>
+            <select id="gender" name="gender">
+                <option value="">Select</option>
+                <option value="MALE">MALE</option>
+                <option value="FEMALE">FEMALE</option>
+            </select>
+            <div class="error-message" id="gender-error"></div>
+        </div>
+
+        <div class="form-group">
+            <label for="phone">Phone:</label>
+            <input type="tel" id="phone" name="phone">
+            <div class="error-message" id="phone-error"></div>
+        </div>
+
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+            <div class="error-message" id="email-error"></div>
+        </div>
+
+        <div class="form-group">
+            <label for="address">Address:</label>
+            <textarea id="address" name="address"></textarea>
+            <div class="error-message" id="address-error"></div>
+        </div>
+
+        <button type="submit">Sign Up</button>
+    </form>
+
+    <div class="already-registered">
+        <p>Already have an account? <a href="/login">Log In</a></p>
+    </div>
+</div>
+
+<script>
+    const checkTokenAndRedirect = () => {
+        const jwtToken = localStorage.getItem('jwtToken');
+        const username = localStorage.getItem('username');
+
+        if (jwtToken && username) {
+            window.location.href = '/home';
+        } else {
+        }
+    };
+
+
+    // Gọi hàm kiểm tra token và chuyển hướng khi tải trang
+    checkTokenAndRedirect();
+
+    const form = document.getElementById('signup-form');
+
+    form.addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevent form submission
+
+        // Perform client-side validation
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+        const confirmPassword = document.getElementById('confirm-password').value;
+        const name = document.getElementById('name').value;
+        const dob = document.getElementById('dob').value;
+        const gender = document.getElementById('gender').value;
+        const phone = document.getElementById('phone').value;
+        const email = document.getElementById('email').value;
+        const address = document.getElementById('address').value;
+
+        // Example validation (you can add more specific validations)
+        if (!username || !password || !confirmPassword || !name || !dob || !gender || !email) {
+            alert('Please fill in all required fields');
+            return;
+        }
+
+        if (password !== confirmPassword) {
+            document.getElementById('confirm-password-error').textContent = 'Passwords do not match';
+            return;
+        }
+
+        const newUser = {
+            username,
+            password,
+            name,
+            dob,
+            gender,
+            phone,
+            email,
+            address
+        };
+
+        // Send data to backend using fetch
+        fetch('/add', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(newUser)
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Response from server:', data);
+                alert('User created successfully!');
+                // Redirect or handle success as needed
+                // window.location.href = '/success'; // Example redirect
+                window.location.href = '/login';
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while processing your request. Please try again.', + error);
+            });
+
+        // Optionally, you can submit the form to handle non-JavaScript environments
+        // this.submit();
+    });
+</script>
+</body>
+</html>
