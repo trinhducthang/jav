@@ -34,7 +34,8 @@ public class SecurityConfig {
             "/addBank/{id}",
             "/v3/api-docs/**",
             "/swagger-ui.html",
-            "/swagger-ui/**"
+            "/swagger-ui/**",
+            "/"
     };
 
     @Value("${jwt.signerKey}")
@@ -45,7 +46,7 @@ public class SecurityConfig {
         httpSecurity.authorizeHttpRequests(request ->
                 request
                         .requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS).permitAll()
-                        .requestMatchers(HttpMethod.GET, "/v3/api-docs/**", "/swagger-ui/**").permitAll() // Đảm bảo các endpoint GET của Swagger được phép truy cập
+                        .requestMatchers(HttpMethod.GET, "/v3/api-docs/**", "/swagger-ui/**","/index","/login","/","/home").permitAll() // Đảm bảo các endpoint GET của Swagger được phép truy cập
                         .requestMatchers(HttpMethod.GET, "user", "/getBanks").hasAuthority("ROLE_ADMIN")
                         .anyRequest().authenticated()
         );

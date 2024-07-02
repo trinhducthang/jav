@@ -75,7 +75,7 @@ public class AuthenticationService {
         boolean authenticated = passwordEncoder.matches(request.getPassword(),user.getPassword());
 
         if(!authenticated)
-            throw new RuntimeException("KHONG HOP LE!");
+            throw new RuntimeException("Invalid account or password");
 
         var token = generateToken(user);
 

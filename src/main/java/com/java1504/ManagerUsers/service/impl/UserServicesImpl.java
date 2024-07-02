@@ -9,6 +9,9 @@ import com.java1504.ManagerUsers.model.Users;
 import com.java1504.ManagerUsers.service.UserServices;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -16,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -54,6 +58,17 @@ public class UserServicesImpl implements UserServices {
 
         }
         return true;
+    }
+
+    @Override
+    public Page<Users> getUsers(Integer pageNo) {
+        Pageable pageable = PageRequest.of(pageNo-1, 2);
+        return usersRepository.findAll(pageable);
+    }
+
+    @Override
+    public Optional<Users> findByUsername(String username) {
+        return usersRepository.findByUsername(username);
     }
 
     @PostAuthorize("returnObject.username == authentication.name")

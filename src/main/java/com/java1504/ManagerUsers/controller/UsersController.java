@@ -3,16 +3,18 @@ package com.java1504.ManagerUsers.controller;
 
 import com.java1504.ManagerUsers.dto.UserDTO;
 import com.java1504.ManagerUsers.dto.response.ResponseData;
+import com.java1504.ManagerUsers.model.Users;
 import com.java1504.ManagerUsers.service.UserServices;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 public class UsersController {
@@ -81,5 +83,14 @@ public class UsersController {
         }
     }
 
+    @GetMapping("/pageable")
+    public ResponseData<?> getUserPageable(@RequestParam Integer page){
+        Page<Users> usersPage = userServices.getUsers(page);
+        return new ResponseData<>(HttpStatus.OK.value(),"ok",LocalDateTime.now(),usersPage);
+    }
 
+    @GetMapping("/api/user/{username}")
+    public Optional<Users> getUserByUsername(@PathVariable String username) {
+        return userServices.findByUsername(username);
+    }
 }

@@ -1,6 +1,7 @@
 package com.java1504.ManagerUsers.model;
 
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.java1504.ManagerUsers.ultil.Role;
 import com.java1504.ManagerUsers.ultil.Gender;
@@ -20,6 +21,10 @@ import java.util.Set;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
+@JsonInclude(JsonInclude.Include.NON_NULL)
+
+
+
 public class Users {
 
 
