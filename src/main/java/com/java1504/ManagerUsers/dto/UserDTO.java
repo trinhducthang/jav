@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserDTO {
-
+    private Integer id;
 
     @NotNull(message = "username must be not null")
     private String username;
@@ -41,5 +41,5 @@ public class UserDTO {
 
     private Role role;
 
-    private LocalDateTime create_at;
+    private LocalDateTime createdAt;
 }

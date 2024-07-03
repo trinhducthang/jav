@@ -71,7 +71,7 @@ public class UserServicesImpl implements UserServices {
         return usersRepository.findByUsername(username);
     }
 
-    @PostAuthorize("returnObject.username == authentication.name")
+
     public boolean deleteUser(int id){
         Users users = usersRepository.findById(id).orElseThrow(() -> new RuntimeException("user not found"));
         usersRepository.delete(users);

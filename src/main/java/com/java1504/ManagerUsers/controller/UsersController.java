@@ -41,7 +41,7 @@ public class UsersController {
     }
 
 
-    @DeleteMapping("delete/{id}")
+    @DeleteMapping("/delete/{id}")
         public ResponseData<?> deleteUser(@PathVariable int id){
             try {
                 return new ResponseData<>(HttpStatus.OK.value(),"Delete successfully",LocalDateTime.now(),userServices.deleteUser(id));
@@ -73,7 +73,7 @@ public class UsersController {
     }
 
     @PutMapping("/updateUser/{id}")
-    public ResponseData<?> updateUser(@RequestBody UserDTO userDTO,@PathVariable Integer     id){
+    public ResponseData<?> updateUser(@RequestBody UserDTO userDTO,@PathVariable Integer id){
         try {
             return new ResponseData<>(HttpStatus.OK.value(), "Update success", LocalDateTime.now(),userServices.updateUser( id,userDTO));
 

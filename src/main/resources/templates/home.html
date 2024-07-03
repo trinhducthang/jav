@@ -43,6 +43,22 @@
         .info-value {
             width: 70%;
         }
+        button[type="submit"] {
+            background-color: #007bff;
+            color: #fff;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            position: absolute;
+            bottom: 20px; /* Điều chỉnh khoảng cách từ bottom */
+            left: calc(50% - 60px); /* Canh giữa theo chiều ngang */
+            transform: translateX(-50%); /* Canh giữa theo chiều ngang */
+        }
+
+        button[type="submit"]:hover {
+            background-color: #0056b3;
+        }
     </style>
 </head>
 <body>
@@ -94,9 +110,60 @@
         <div class="info-value" id="create_at"></div>
     </div>
 </div>
+<div>
+    <button type="submit" onclick="goToDashboard()" >Dashboard</button>
+</div>
 <script>
+
+    const goToDashboard = () => {
+        if(username === 'admin')
+            window.location.href = '/dashboard';
+        else
+            window.alert('Chức năng này chỉ dành cho admin')
+    };
+
+
+
     const jwtToken = localStorage.getItem('jwtToken');
     const username = localStorage.getItem('username');
+
+
+
+    const checkTokenAndRedirect = () => {
+        if (jwtToken
+
+
+        ) {
+            // Tạo đối tượng yêu cầu xác thực
+            const introspectRequest = {
+                token: jwtToken
+            };
+
+            // Gửi yêu cầu API để kiểm tra token
+            fetch('/auth/introspect', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(introspectRequest)
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.code === 200 && data.result && data.result.valid === true) {
+                    } else {
+                        window.location.href='/login'
+                        window.alert('token khong hop le hoac da het han')
+                    }
+                })
+                .catch(error => {
+                    console.error('Lỗi kiểm tra token:', error);
+                });
+        } else {
+            // Không có token hoặc username, thực hiện hành động khác nếu cần
+        }
+    };
+
+    checkTokenAndRedirect()
 
     if (jwtToken) {
         fetch(`/api/user/${username}`, {

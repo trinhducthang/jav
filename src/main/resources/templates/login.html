@@ -75,17 +75,45 @@
     </form>
 </div>
 <script>
+
+
+
+    // Hàm kiểm tra token và chuyển hướng
     // Hàm kiểm tra token và chuyển hướng
     const checkTokenAndRedirect = () => {
         const jwtToken = localStorage.getItem('jwtToken');
         const username = localStorage.getItem('username');
 
         if (jwtToken && username) {
-            window.location.href = '/home';
+            // Tạo đối tượng yêu cầu xác thực
+            const introspectRequest = {
+                token: jwtToken
+            };
+
+            // Gửi yêu cầu API để kiểm tra token
+            fetch('/auth/introspect', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(introspectRequest)
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.code === 200 && data.result && data.result.valid === true) { // Kiểm tra mã phản hồi thành công (200) và sự hiện diện của kết quả
+                        // Chuyển hướng đến trang /home nếu token hợp lệ
+                        window.location.href = '/home';
+                    } else {
+                        // Token không hợp lệ, thực hiện hành động khác nếu cần
+                    }
+                })
+                .catch(error => {
+                    console.error('Lỗi kiểm tra token:', error);
+                });
         } else {
+            // Không có token hoặc username, thực hiện hành động khác nếu cần
         }
     };
-
 
     // Gọi hàm kiểm tra token và chuyển hướng khi tải trang
     checkTokenAndRedirect();
@@ -130,6 +158,7 @@
                 alert('Đã xảy ra lỗi khi đăng nhập. Vui lòng thử lại sau.');
             });
     });
+
 </script>
 
 </body>

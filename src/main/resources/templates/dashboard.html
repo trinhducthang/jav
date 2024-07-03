@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <style>
+        /* CSS cơ bản */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        .container {
+            width: 80%;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        /* Bảng danh sách người dùng */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        td {
+            background-color: #f9f9f9;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        /* Nút chức năng */
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .action-buttons button {
+            margin: 0 10px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .action-buttons button.delete {
+            background-color: #dc3545;
+            color: #fff;
+        }
+
+        .action-buttons button.delete:hover {
+            background-color: #c82333;
+        }
+
+        .action-buttons button.edit {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        .action-buttons button.edit:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Quản lý người dùng</h1>
+
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Tên đăng nhập</th>
+            <th>Họ và tên</th>
+            <th>Email</th>
+            <th>Địa chỉ</th>
+            <th>Quyền</th>
+            <th>Ngày tạo</th>
+            <th>Thao tác</th>
+        </tr>
+        </thead>
+        <tbody id="userTableBody">
+        <!-- Dữ liệu người dùng sẽ được thêm bằng JavaScript -->
+        </tbody>
+    </table>
+
+    <div class="action-buttons">
+        <button onclick="loadUsers()">Tải danh sách người dùng</button>
+        <button onclick="openAddUserForm()">Thêm người dùng</button>
+    </div>
+</div>
+
+<!-- Script để gọi API và xử lý dữ liệu -->
+<script>
+    // Lấy token từ localStorage
+    const jwtToken = localStorage.getItem('jwtToken');
+
+    // Kiểm tra và hiển thị thông báo nếu token không tồn tại
+    if (!jwtToken) {
+        alert('Vui lòng đăng nhập để truy cập vào trang này.');
+        window.location.href = '/login'; // Chuyển hướng về trang đăng nhập nếu không có token
+    }
+
+    // Hàm gọi API để lấy danh sách người dùng từ backend
+    const loadUsers = () => {
+        fetch('/user', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + jwtToken
+            }
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Không thể tải danh sách người dùng.');
+                }
+                return response.json();
+            })
+            .then(data => {
+                const userTableBody = document.getElementById('userTableBody');
+                userTableBody.innerHTML = ''; // Xóa dữ liệu cũ
+
+                // Hiển thị từng người dùng trong bảng
+                data.forEach(user => {
+                    const row = `<tr>
+                    <td>${user.id}</td>
+                    <td>${user.username}</td>
+                    <td>${user.name}</td>
+                    <td>${user.email}</td>
+                    <td>${user.address}</td>
+                    <td>${user.role}</td>
+                    <td>${user.createdAt}</td>
+                    <td>
+                        <button class="edit" onclick="openEditUserForm(${user.id})">Sửa</button>
+                        <button class="delete" onclick="deleteUser(${user.id})">Xóa</button>
+                    </td>
+                </tr>`;
+                    userTableBody.innerHTML += row;
+                });
+            })
+            .catch(error => {
+                console.error('Lỗi khi tải danh sách người dùng:', error);
+                alert('Đã xảy ra lỗi khi tải danh sách người dùng. Vui lòng thử lại sau.');
+            });
+    };
+
+    // Hàm xóa người dùng theo ID
+    const deleteUser = (id) => {
+        if (confirm('Bạn có chắc muốn xóa người dùng này?')) {
+            fetch(`/delete/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': 'Bearer ' + jwtToken
+                }
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Không thể xóa người dùng.');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    alert(data.message);
+                    loadUsers(); // Tải lại danh sách người dùng sau khi xóa
+                })
+                .catch(error => {
+                    console.error('Lỗi khi xóa người dùng:', error);
+                    alert('Đã xảy ra lỗi khi xóa người dùng. Vui lòng thử lại sau.');
+                });
+        }
+    };
+
+    // Hàm mẫu để mở form thêm người dùng (có thể triển khai sau)
+    const openAddUserForm = () => {
+        alert('Chức năng thêm người dùng chưa được triển khai.');
+    };
+
+    // Hàm mẫu để mở form sửa người dùng (có thể triển khai sau)
+    const openEditUserForm = (id) => {
+        alert(`Chức năng sửa người dùng với ID ${id} chưa được triển khai.`);
+    };
+
+    // Tải danh sách người dùng khi trang được tải
+    document.addEventListener('DOMContentLoaded', loadUsers);
+</script>
+
+</body>
+</html>
