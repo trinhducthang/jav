@@ -43,27 +43,35 @@
         .info-value {
             width: 70%;
         }
-        button[type="submit"] {
+
+        button[type="submit"], button[type="button"] {
             background-color: #007bff;
             color: #fff;
             padding: 12px 20px;
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            position: absolute;
-            bottom: 20px; /* Điều chỉnh khoảng cách từ bottom */
-            left: calc(50% - 60px); /* Canh giữa theo chiều ngang */
-            transform: translateX(-50%); /* Canh giữa theo chiều ngang */
+            margin: 10px;
         }
 
-        button[type="submit"]:hover {
+        button[type="submit"]:hover, button[type="button"]:hover {
             background-color: #0056b3;
+        }
+
+        .button-container {
+            text-align: center;
+            margin-top: 20px;
         }
     </style>
 </head>
 <body>
 <div class="container">
     <h1>Thông tin người dùng</h1>
+
+    <div class="info-section">
+        <div class="info-label">ID:</div>
+        <div class="info-value" id="id"></div>
+    </div>
 
     <div class="info-section">
         <div class="info-label">Tên đăng nhập:</div>
@@ -110,30 +118,29 @@
         <div class="info-value" id="create_at"></div>
     </div>
 </div>
-<div>
-    <button type="submit" onclick="goToDashboard()" >Dashboard</button>
-</div>
-<script>
 
+<div class="button-container">
+    <button type="submit" onclick="goToDashboard()">Dashboard</button>
+    <button type="button" onclick="transferMoney()">Chuyển tiền</button>
+</div>
+
+<script>
     const goToDashboard = () => {
-        if(username === 'admin')
+        if (username === 'admin')
             window.location.href = '/dashboard';
         else
-            window.alert('Chức năng này chỉ dành cho admin')
+            window.alert('Chức năng này chỉ dành cho admin');
     };
 
-
+    const transferMoney = () => {
+        window.location.href = '/transfer';
+    };
 
     const jwtToken = localStorage.getItem('jwtToken');
     const username = localStorage.getItem('username');
 
-
-
     const checkTokenAndRedirect = () => {
-        if (jwtToken
-
-
-        ) {
+        if (jwtToken) {
             // Tạo đối tượng yêu cầu xác thực
             const introspectRequest = {
                 token: jwtToken
@@ -150,9 +157,10 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.code === 200 && data.result && data.result.valid === true) {
+                        // Token is valid
                     } else {
-                        window.location.href='/login'
-                        window.alert('token khong hop le hoac da het han')
+                        window.location.href = '/login';
+                        window.alert('Token không hợp lệ hoặc đã hết hạn');
                     }
                 })
                 .catch(error => {
@@ -163,8 +171,8 @@
         }
     };
 
-    checkTokenAndRedirect()
-
+    checkTokenAndRedirect();
+    let a;
     if (jwtToken) {
         fetch(`/api/user/${username}`, {
             method: 'GET',
@@ -175,6 +183,10 @@
         })
             .then(response => response.json())
             .then(data => {
+                document.getElementById('id').textContent = data.id;
+                let userId = data.id;
+                console.log('User ID:', userId);  // Gỡ lỗi: in ra user ID
+                localStorage.setItem('user_id', userId);
                 document.getElementById('username').textContent = data.username;
                 document.getElementById('name').textContent = data.name;
                 document.getElementById('dob').textContent = data.dob;
@@ -185,7 +197,7 @@
                 document.getElementById('role').textContent = data.role;
                 document.getElementById('create_at').textContent = data.createdAt;
 
-                document.querySelector('.container').style.display = 'block'; // Hiển thị phần container sau khi load dữ liệu
+                document.querySelector('.container').style.display = 'block';
             })
             .catch(error => {
                 console.error('Lỗi lấy dữ liệu người dùng:', error);
@@ -195,6 +207,7 @@
         alert('Không có token, không thể gửi yêu cầu đến /home');
         window.location.href = '/login'; // Xử lý khi không có token trong localStorage
     }
+
 </script>
 
 </body>

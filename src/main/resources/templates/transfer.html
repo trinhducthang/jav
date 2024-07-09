@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chuyển Tiền</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        .container {
+            width: 50%;
+            margin: 100px auto;
+            padding: 30px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .form-group select,
+        .form-group input {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+
+        button[type="submit"] {
+            background-color: #007bff;
+            color: #fff;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            display: block;
+            margin: 0 auto;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Chuyển Tiền</h1>
+    <form id="transactionForm">
+        <div class="form-group">
+            <label for="source">Tài khoản gửi:</label>
+            <select id="source" name="source" required></select>
+        </div>
+        <div class="form-group">
+            <label for="destination">Số tài khoản nhận:</label>
+            <input type="text" id="destination" name="destination" required>
+        </div>
+        <div class="form-group">
+            <label for="receiverName">Tên người nhận:</label>
+            <input type="text" id="receiverName" name="receiverName" readonly>
+        </div>
+        <div class="form-group">
+            <label for="amount">Số tiền:</label>
+            <input type="number" id="amount" name="amount" required>
+        </div>
+        <button type="submit">Chuyển tiền</button>
+    </form>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', async () => {
+        const idString = localStorage.getItem('user_id');
+        console.log('Stored User ID:', idString);
+
+        if (idString) {
+            const id = parseInt(idString, 10);
+            console.log('Parsed User ID:', id);
+            const jwtToken = localStorage.getItem('jwtToken');
+
+            try {
+                const response = await fetch(`/getBanks/${id}`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': 'Bearer ' + jwtToken,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    const responseData = await response.json();
+                    console.log('API Response:', responseData);
+
+                    if (responseData.status === 200 && responseData.data) {
+                        const senderAccounts = responseData.data;
+                        const sourceSelect = document.getElementById('source');
+
+                        // Populate options for source account select
+                        senderAccounts.forEach(account => {
+                            const option = document.createElement('option');
+                            option.value = account.id;
+                            option.textContent = account.bankNumber; // Chỉ hiển thị số tài khoản
+                            sourceSelect.appendChild(option);
+                        });
+                    } else {
+                        console.error('API Error:', responseData.message);
+                        alert(`Lỗi: ${responseData.message}`);
+                    }
+                } else {
+                    const errorData = await response.json();
+                    console.error('API Error:', errorData);
+                    alert(`Lỗi: ${errorData.message}`);
+                }
+            } catch (error) {
+                console.error('Fetch Error:', error);
+                alert('Đã xảy ra lỗi khi tải danh sách tài khoản gửi');
+            }
+        } else {
+            console.error('User ID not found in localStorage');
+            alert('Không tìm thấy user ID. Vui lòng đăng nhập lại.');
+            window.location.href = '/login';
+        }
+    });
+
+    document.getElementById('transactionForm').addEventListener('submit', async (event) => {
+        event.preventDefault();
+
+        const transactionDetails = {
+            source: document.getElementById('source').value,
+            destination: document.getElementById('destination').value,
+            amount: parseFloat(document.getElementById('amount').value)
+        };
+
+        const jwtToken = localStorage.getItem('jwtToken');
+
+        try {
+            const response = await fetch(`/transfer/${transactionDetails.source}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + jwtToken
+                },
+                body: JSON.stringify(transactionDetails)
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                console.log('Transfer Success:', data);
+                alert('Chuyển tiền thành công');
+            } else {
+                const errorData = await response.json();
+                console.error('Transfer Error:', errorData);
+                alert(`Lỗi: ${errorData.message}`);
+            }
+        } catch (error) {
+            console.error('Fetch Error:', error);
+            alert('Đã xảy ra lỗi khi chuyển tiền');
+        }
+    });
+
+    document.getElementById('destination').addEventListener('blur', async (event) => {
+        const destinationAccount = event.target.value;
+        const jwtToken = localStorage.getItem('jwtToken');
+
+        try {
+            const response = await fetch(`/getUser/${destinationAccount}`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': 'Bearer ' + jwtToken,
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (response.ok) {
+                const data = await response.text();
+                document.getElementById('receiverName').value = data;
+            } else {
+                document.getElementById('receiverName').value = '';
+                console.error('Error fetching user name');
+            }
+        } catch (error) {
+            document.getElementById('receiverName').value = '';
+            console.error('Fetch Error:', error);
+        }
+    });
+</script>
+</body>
+</html>

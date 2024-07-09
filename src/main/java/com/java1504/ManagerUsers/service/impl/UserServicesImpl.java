@@ -3,6 +3,8 @@ package com.java1504.ManagerUsers.service.impl;
 
 import com.java1504.ManagerUsers.dto.UserDTO;
 import com.java1504.ManagerUsers.mapper.UserMapper;
+import com.java1504.ManagerUsers.model.Bank;
+import com.java1504.ManagerUsers.repository.BanksRepository;
 import com.java1504.ManagerUsers.ultil.Role;
 import com.java1504.ManagerUsers.repository.UsersRepository;
 import com.java1504.ManagerUsers.model.Users;
@@ -32,6 +34,9 @@ public class UserServicesImpl implements UserServices {
 
     @Autowired
     private UsersRepository usersRepository;
+
+    @Autowired
+    private BanksRepository banksRepository;
 
 
     public Users addUser(UserDTO userDTO){
@@ -71,6 +76,13 @@ public class UserServicesImpl implements UserServices {
         return usersRepository.findByUsername(username);
     }
 
+    @Override
+    public List<Bank> getBankByUser(Integer id) {
+        // Thực hiện truy vấn dữ liệu từ cơ sở dữ liệu dựa trên id của người dùng
+        List<Bank> banks = banksRepository.findByUsers_id(id);
+        return banks;
+    }
+
 
     public boolean deleteUser(int id){
         Users users = usersRepository.findById(id).orElseThrow(() -> new RuntimeException("user not found"));
@@ -108,5 +120,10 @@ public class UserServicesImpl implements UserServices {
 
     }
 
+    @Override
+    public String getNameByNumber(String number) {
+        Users users = usersRepository.findUserByBankNumber(number);
+        return users.getName();
+    }
 
 }

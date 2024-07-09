@@ -85,6 +85,57 @@
         .action-buttons button.edit:hover {
             background-color: #0056b3;
         }
+        #addUserForm {
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+        }
+
+        #addUserForm h2 {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        #addUserForm label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        #addUserForm input,
+        #addUserForm select {
+            width: calc(100% - 20px);
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+
+        #addUserForm button[type="submit"] {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        #addUserForm input[type="password"] {
+            width: calc(100% - 20px);
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+
+
+        #addUserForm button[type="submit"]:hover {
+            background-color: #0056b3;
+        }
     </style>
 </head>
 <body>
@@ -97,6 +148,7 @@
             <th>ID</th>
             <th>Tên đăng nhập</th>
             <th>Họ và tên</th>
+            <th>Giới tính</th>
             <th>Email</th>
             <th>Địa chỉ</th>
             <th>Quyền</th>
@@ -109,8 +161,43 @@
         </tbody>
     </table>
 
+    <!-- Thêm form nhập liệu người dùng -->
+    <!-- Form thêm người dùng -->
+    <div id="addUserForm">
+        <h2>Thêm người dùng</h2>
+        <form id="userForm">
+            <label for="username">Tên đăng nhập:</label><br>
+            <input type="text" id="username" name="username" required><br>
+
+            <label for="password">Mật khẩu:</label><br>
+            <input type="password" id="password" name="password" required><br>
+
+            <label for="name">Họ và tên:</label><br>
+            <input type="text" id="name" name="name" required><br>
+
+            <label for="email">Email:</label><br>
+            <input type="email" id="email" name="email" required><br>
+
+            <label for="gender">Giới tính:</label><br>
+            <select id="gender" name="gender" required>
+                <option value="MALE">Nam</option>
+                <option value="FEMALE">Nữ</option>
+                <option value="OTHER">Khác</option>
+            </select><br>
+
+            <label for="phone">Số điện thoại:</label><br>
+            <input type="text" id="phone" name="phone" required><br>
+
+            <label for="address">Địa chỉ:</label><br>
+            <input type="text" id="address" name="address"><br>
+
+            <button type="submit">Thêm</button>
+        </form>
+    </div>
+
+
     <div class="action-buttons">
-        <button onclick="loadUsers()">Tải danh sách người dùng</button>
+<!--        <button onclick="loadUsers()">Tải danh sách người dùng</button>-->
         <button onclick="openAddUserForm()">Thêm người dùng</button>
     </div>
 </div>
@@ -151,6 +238,7 @@
                     <td>${user.id}</td>
                     <td>${user.username}</td>
                     <td>${user.name}</td>
+                    <td>${user.gender}</td>
                     <td>${user.email}</td>
                     <td>${user.address}</td>
                     <td>${user.role}</td>
@@ -197,8 +285,43 @@
 
     // Hàm mẫu để mở form thêm người dùng (có thể triển khai sau)
     const openAddUserForm = () => {
-        alert('Chức năng thêm người dùng chưa được triển khai.');
+        const form = document.getElementById('addUserForm');
+        form.style.display = form.style.display === 'none' ? 'block' : 'none';
     };
+
+    document.getElementById('userForm').addEventListener('submit', async (event) => {
+        event.preventDefault();
+
+        const formData = {
+            username: document.getElementById('username').value,
+            password: document.getElementById('password').value,
+            name: document.getElementById('name').value,
+            email: document.getElementById('email').value,
+            gender: document.getElementById('gender').value,
+            phone: document.getElementById('phone').value,
+            address: document.getElementById('address').value
+        };
+
+        try {
+            const response = await fetch('/add', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData)
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                alert('User added successfully');
+            } else {
+                const errorData = await response.json();
+                alert(`Error: ${errorData.message}`);
+            }
+        } catch (error) {
+            alert('An error occurred while adding the user');
+        }
+    });
 
     // Hàm mẫu để mở form sửa người dùng (có thể triển khai sau)
     const openEditUserForm = (id) => {

@@ -93,4 +93,20 @@ public class UsersController {
     public Optional<Users> getUserByUsername(@PathVariable String username) {
         return userServices.findByUsername(username);
     }
+
+    @GetMapping("getBanks/{id}")
+    public ResponseData<?> getBanks(@PathVariable int id) {
+        try {
+            return new ResponseData<>(HttpStatus.OK.value(),"get success",LocalDateTime.now(),userServices.getBankByUser(id));
+        }
+        catch (RuntimeException e){
+            return new ResponseData<>(HttpStatus.BAD_REQUEST.value(), e.getMessage());
+        }
+    }
+
+    @GetMapping("/getUser/{number}")
+    public String getUserByNumber(@PathVariable String number){
+        return userServices.getNameByNumber(number);
+    }
+
 }

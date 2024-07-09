@@ -32,4 +32,9 @@ public class HomeController {
     public String dashboard(Model model) {
         return "dashboard";
     }
+
+    @GetMapping("/transfer")
+    public String transfer(Model model) {
+        return "transfer";
+    }
 }

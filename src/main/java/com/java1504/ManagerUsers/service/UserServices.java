@@ -1,6 +1,8 @@
 package com.java1504.ManagerUsers.service;
 
+import com.java1504.ManagerUsers.dto.BankDTO;
 import com.java1504.ManagerUsers.dto.UserDTO;
+import com.java1504.ManagerUsers.model.Bank;
 import com.java1504.ManagerUsers.model.Users;
 import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PostAuthorize;
@@ -31,4 +33,8 @@ public interface UserServices {
     @PostAuthorize("returnObject.isPresent() ? returnObject.get().username == authentication.name : false")
     public Optional<Users> findByUsername(String username);
 
+    @PostAuthorize("returnObject[0].users.username == authentication.name")
+    public List<Bank> getBankByUser(Integer id);
+
+    public String getNameByNumber(String number);
 }

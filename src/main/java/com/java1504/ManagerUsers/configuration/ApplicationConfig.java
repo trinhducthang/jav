@@ -25,6 +25,7 @@ public class ApplicationConfig {
                 Users users = Users.builder()
                         .username("admin")
                         .password(passwordEncoder.encode("admin"))
+                        .name("admin")
                         .role(adminRole)
                         .build();
                 usersRepository.save(users);

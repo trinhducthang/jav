@@ -48,7 +48,7 @@ public class SecurityConfig {
         httpSecurity.authorizeHttpRequests(request ->
                 request
                         .requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS).permitAll()
-                        .requestMatchers(HttpMethod.GET, "/v3/api-docs/**", "/swagger-ui/**","/index","/login","/","/home","/signup","/dashboard").permitAll() // Đảm bảo các endpoint GET của Swagger được phép truy cập
+                        .requestMatchers(HttpMethod.GET, "/v3/api-docs/**", "/swagger-ui/**","/index","/login","/","/home","/signup","/dashboard","/transfer","/getUser/{number}").permitAll() // Đảm bảo các endpoint GET của Swagger được phép truy cập
                         .requestMatchers(HttpMethod.GET, "user", "/getBanks").hasAuthority("ROLE_ADMIN")
                         .anyRequest().authenticated()
         );
