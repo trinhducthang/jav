@@ -11,11 +11,16 @@
             margin: 0;
             padding: 0;
             background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
         }
 
         .container {
-            width: 400px;
-            margin: 50px auto;
+            width: 90%;
+            max-width: 400px;
+            margin: 0 auto;
             padding: 30px;
             background-color: #fff;
             border-radius: 10px;
@@ -52,10 +57,37 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            width: 100%;
+            font-size: 16px;
         }
 
         button[type="submit"]:hover {
             background-color: #0056b3;
+        }
+
+        .signup-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .signup-link a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        .signup-link a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 20px;
+            }
+
+            button[type="submit"] {
+                padding: 10px;
+                font-size: 14px;
+            }
         }
     </style>
 </head>
@@ -72,13 +104,12 @@
             <input type="password" id="password" name="password" required>
         </div>
         <button type="submit">Đăng nhập</button>
+        <div class="signup-link">
+            <p>Chưa có tài khoản? <a href="/signup">Đăng ký ngay</a></p>
+        </div>
     </form>
 </div>
 <script>
-
-
-
-    // Hàm kiểm tra token và chuyển hướng
     // Hàm kiểm tra token và chuyển hướng
     const checkTokenAndRedirect = () => {
         const jwtToken = localStorage.getItem('jwtToken');
@@ -158,8 +189,6 @@
                 alert('Đã xảy ra lỗi khi đăng nhập. Vui lòng thử lại sau.');
             });
     });
-
 </script>
-
 </body>
 </html>

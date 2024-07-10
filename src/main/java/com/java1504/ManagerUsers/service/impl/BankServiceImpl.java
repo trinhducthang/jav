@@ -57,11 +57,13 @@ public class BankServiceImpl implements BankServices {
         return banksRepository.save(bank);
     }
 
+
     @Override
     public boolean bankTransaction(String source, String destination, long amount) {
         Bank bank1 = banksRepository.findByBankNumber(source);
         Bank bank2 = banksRepository.findByBankNumber(destination);
-        if(bank1 == null || bank2 == null) throw new RuntimeException("Bank not found");
+        if(bank1 == null) throw new RuntimeException("Bank source not found");
+        if(bank2 == null) throw new RuntimeException("Bank destination not found");
         if(bank1.getBalance() < amount) throw new RuntimeException("Insufficient funds");
         else{
             bank1.setBalance(bank1.getBalance() - amount);

@@ -6,6 +6,7 @@ import com.java1504.ManagerUsers.request.IntrospectRequest;
 import com.java1504.ManagerUsers.dto.response.ApiResponse;
 import com.java1504.ManagerUsers.dto.response.AuthenticationResponse;
 import com.java1504.ManagerUsers.dto.response.IntrospectResponse;
+import com.java1504.ManagerUsers.request.LogoutRequest;
 import com.java1504.ManagerUsers.service.AuthenticationService;
 import com.nimbusds.jose.JOSEException;
 import lombok.*;
@@ -62,6 +63,15 @@ public class AuthenticationController {
                     .code(HttpStatus.BAD_REQUEST.value())
                     .build();
         }
+    }
+
+
+    @PostMapping("/logout")
+    ApiResponse<Void> logout(@RequestBody LogoutRequest request)
+            throws ParseException, JOSEException {
+        authenticationService.logout(request);
+        return ApiResponse.<Void>builder()
+                .build();
     }
 
 

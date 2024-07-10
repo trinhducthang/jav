@@ -36,7 +36,8 @@ public class SecurityConfig {
             "/swagger-ui.html",
             "/swagger-ui/**",
             "/",
-            "/signup"
+            "/signup",
+            "/auth/logout"
 
     };
 

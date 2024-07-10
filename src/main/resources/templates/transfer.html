@@ -113,13 +113,19 @@
                         // Populate options for source account select
                         senderAccounts.forEach(account => {
                             const option = document.createElement('option');
-                            option.value = account.id;
-                            option.textContent = account.bankNumber; // Chỉ hiển thị số tài khoản
+                            option.value = account.bankNumber; // Use bankNumber as value
+                            option.textContent = account.bankNumber + ' | Số dư: ' + account.balance;
                             sourceSelect.appendChild(option);
                         });
-                    } else {
+                    }
+                    else if(responseData.data.message === 'Failed to evaluate expression \'returnObject[0].users.username == authentication.name\''){
+                        alert(`Bạn chưa có số tài khoản nào! Vui lòng tạo thêm 1 số tài khoản.`)
+                    }
+                    else {
                         console.error('API Error:', responseData.message);
                         alert(`Lỗi: ${responseData.message}`);
+
+                        // alert(`Chưa có số tài khoản nào vui lòng tạo 1 số tài khoản mới!`)
                     }
                 } else {
                     const errorData = await response.json();
@@ -128,7 +134,7 @@
                 }
             } catch (error) {
                 console.error('Fetch Error:', error);
-                alert('Đã xảy ra lỗi khi tải danh sách tài khoản gửi');
+                alert('Bạn chưa có số tài khoản nào! Vui lòng tạo thêm 1 số tài khoản.');
             }
         } else {
             console.error('User ID not found in localStorage');
@@ -136,6 +142,7 @@
             window.location.href = '/login';
         }
     });
+
 
     document.getElementById('transactionForm').addEventListener('submit', async (event) => {
         event.preventDefault();
@@ -145,6 +152,8 @@
             destination: document.getElementById('destination').value,
             amount: parseFloat(document.getElementById('amount').value)
         };
+
+        console.log('Transaction Details:', transactionDetails); // Log dữ liệu trước khi gửi
 
         const jwtToken = localStorage.getItem('jwtToken');
 
@@ -158,14 +167,23 @@
                 body: JSON.stringify(transactionDetails)
             });
 
-            if (response.ok) {
-                const data = await response.json();
+            const data = await response.json();
+
+            if (response.ok && data.message !== 'Bank not found' && data.message !== 'Insufficient funds') {
                 console.log('Transfer Success:', data);
                 alert('Chuyển tiền thành công');
             } else {
-                const errorData = await response.json();
-                console.error('Transfer Error:', errorData);
-                alert(`Lỗi: ${errorData.message}`);
+                console.error('Transfer Error:', data);
+
+                if (data.message === 'Bank not found' ) {
+                    alert(`Số tài khoản không tồn tại`);
+                }
+                else if(data.message === 'Insufficient funds'){
+                    alert(`Số tiền không đủ để chuyển`);
+                }
+                else {
+                    alert('Đã xảy ra lỗi khi chuyển tiền');
+                }
             }
         } catch (error) {
             console.error('Fetch Error:', error);

@@ -11,15 +11,34 @@
             margin: 0;
             padding: 0;
             background-color: #f4f4f4;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
         }
 
         .container {
-            width: 80%;
-            margin: 50px auto;
-            padding: 30px;
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .sidebar {
+            width: 30%;
+            padding: 20px;
             background-color: #fff;
-            border-radius: 10px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            border-right: 1px solid #ddd;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-sizing: border-box;
+        }
+
+        .content {
+            width: 70%;
+            padding: 20px;
+            box-sizing: border-box;
+            overflow-y: auto;
         }
 
         h1 {
@@ -36,12 +55,12 @@
         }
 
         .info-label {
-            width: 30%;
+            width: 40%;
             font-weight: bold;
         }
 
         .info-value {
-            width: 70%;
+            width: 60%;
         }
 
         button[type="submit"], button[type="button"] {
@@ -51,7 +70,9 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            margin: 10px;
+            margin: 10px 0;
+            display: block;
+            width: 100%; /* Đảm bảo các nút rộng 100% trên thiết bị di động */
         }
 
         button[type="submit"]:hover, button[type="button"]:hover {
@@ -62,66 +83,112 @@
             text-align: center;
             margin-top: 20px;
         }
+
+        .logout-button {
+            margin-top: auto;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                border-right: none;
+                border-bottom: 1px solid #ddd;
+            }
+
+            .content {
+                width: 100%;
+            }
+
+            .info-label, .info-value {
+                width: 100%;
+                display: block;
+                margin-bottom: 5px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            button[type="submit"], button[type="button"] {
+                width: 100%;
+                padding: 10px;
+                font-size: 14px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+        }
     </style>
 </head>
 <body>
 <div class="container">
-    <h1>Thông tin người dùng</h1>
+    <div class="sidebar">
+        <div>
+            <h1>Thông tin người dùng</h1>
 
-    <div class="info-section">
-        <div class="info-label">ID:</div>
-        <div class="info-value" id="id"></div>
+            <div class="info-section">
+                <div class="info-label">ID:</div>
+                <div class="info-value" id="id"></div>
+            </div>
+
+            <div class="info-section">
+                <div class="info-label">Tên đăng nhập:</div>
+                <div class="info-value" id="username"></div>
+            </div>
+
+            <div class="info-section">
+                <div class="info-label">Họ và tên:</div>
+                <div class="info-value" id="name"></div>
+            </div>
+
+            <div class="info-section">
+                <div class="info-label">Ngày sinh:</div>
+                <div class="info-value" id="dob"></div>
+            </div>
+
+            <div class="info-section">
+                <div class="info-label">Giới tính:</div>
+                <div class="info-value" id="gender"></div>
+            </div>
+
+            <div class="info-section">
+                <div class="info-label">Số điện thoại:</div>
+                <div class="info-value" id="phone"></div>
+            </div>
+
+            <div class="info-section">
+                <div class="info-label">Email:</div>
+                <div class="info-value" id="email"></div>
+            </div>
+
+            <div class="info-section">
+                <div class="info-label">Địa chỉ:</div>
+                <div class="info-value" id="address"></div>
+            </div>
+
+            <div class="info-section">
+                <div class="info-label">Quyền:</div>
+                <div class="info-value" id="role"></div>
+            </div>
+
+            <div class="info-section">
+                <div class="info-label">Ngày tạo:</div>
+                <div class="info-value" id="create_at"></div>
+            </div>
+        </div>
+        <button type="button" class="logout-button" onclick="logout()">Đăng xuất</button>
     </div>
 
-    <div class="info-section">
-        <div class="info-label">Tên đăng nhập:</div>
-        <div class="info-value" id="username"></div>
+    <div class="content">
+        <div class="button-container">
+            <button type="submit" id="dashboardButton" onclick="goToDashboard()">Dashboard</button>
+            <button type="button" onclick="transferMoney()">Chuyển tiền</button>
+        </div>
     </div>
-
-    <div class="info-section">
-        <div class="info-label">Họ và tên:</div>
-        <div class="info-value" id="name"></div>
-    </div>
-
-    <div class="info-section">
-        <div class="info-label">Ngày sinh:</div>
-        <div class="info-value" id="dob"></div>
-    </div>
-
-    <div class="info-section">
-        <div class="info-label">Giới tính:</div>
-        <div class="info-value" id="gender"></div>
-    </div>
-
-    <div class="info-section">
-        <div class="info-label">Số điện thoại:</div>
-        <div class="info-value" id="phone"></div>
-    </div>
-
-    <div class="info-section">
-        <div class="info-label">Email:</div>
-        <div class="info-value" id="email"></div>
-    </div>
-
-    <div class="info-section">
-        <div class="info-label">Địa chỉ:</div>
-        <div class="info-value" id="address"></div>
-    </div>
-
-    <div class="info-section">
-        <div class="info-label">Quyền:</div>
-        <div class="info-value" id="role"></div>
-    </div>
-
-    <div class="info-section">
-        <div class="info-label">Ngày tạo:</div>
-        <div class="info-value" id="create_at"></div>
-    </div>
-</div>
-
-<div class="button-container">
-    <button type="submit" onclick="goToDashboard()">Dashboard</button>
-    <button type="button" onclick="transferMoney()">Chuyển tiền</button>
 </div>
 
 <script>
@@ -134,6 +201,38 @@
 
     const transferMoney = () => {
         window.location.href = '/transfer';
+    };
+
+    const logout = () => {
+        const jwtToken = localStorage.getItem('jwtToken');
+
+        if (!jwtToken) {
+            alert('Không có token để đăng xuất.');
+            return;
+        }
+
+        fetch('/logout', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + jwtToken
+            },
+            body: JSON.stringify({ token: jwtToken })
+        })
+            .then(response => {
+                if (response.ok) {
+                    localStorage.removeItem('jwtToken');
+                    localStorage.removeItem('username');
+                    alert('Đăng xuất thành công.');
+                    window.location.href = '/login';
+                } else {
+                    alert('Đăng xuất không thành công.');
+                }
+            })
+            .catch(error => {
+                console.error('Lỗi đăng xuất:', error);
+                alert('Đã xảy ra lỗi khi đăng xuất. Vui lòng thử lại sau.');
+            });
     };
 
     const jwtToken = localStorage.getItem('jwtToken');
@@ -172,7 +271,6 @@
     };
 
     checkTokenAndRedirect();
-    let a;
     if (jwtToken) {
         fetch(`/api/user/${username}`, {
             method: 'GET',
@@ -197,7 +295,11 @@
                 document.getElementById('role').textContent = data.role;
                 document.getElementById('create_at').textContent = data.createdAt;
 
-                document.querySelector('.container').style.display = 'block';
+                    if (data.role !== 'ADMIN') {
+                    document.getElementById('dashboardButton').style.display = 'none';
+                }
+
+                document.querySelector('.container').style.display = 'flex';
             })
             .catch(error => {
                 console.error('Lỗi lấy dữ liệu người dùng:', error);
@@ -207,7 +309,6 @@
         alert('Không có token, không thể gửi yêu cầu đến /home');
         window.location.href = '/login'; // Xử lý khi không có token trong localStorage
     }
-
 </script>
 
 </body>

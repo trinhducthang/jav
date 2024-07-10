@@ -123,6 +123,7 @@ public class UserServicesImpl implements UserServices {
     @Override
     public String getNameByNumber(String number) {
         Users users = usersRepository.findUserByBankNumber(number);
+        if(users == null) throw new RuntimeException("Bank not found, please retype!");
         return users.getName();
     }
 

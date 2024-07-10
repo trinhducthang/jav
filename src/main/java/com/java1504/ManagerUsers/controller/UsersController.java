@@ -106,7 +106,12 @@ public class UsersController {
 
     @GetMapping("/getUser/{number}")
     public String getUserByNumber(@PathVariable String number){
-        return userServices.getNameByNumber(number);
+        try {
+            return userServices.getNameByNumber(number);
+        }
+        catch (RuntimeException e){
+            return e.getMessage();
+        }
     }
 
 }
