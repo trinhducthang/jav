@@ -23,7 +23,7 @@ public class BanksController {
     public ResponseData<?> addBank(@RequestBody Bank bank, @PathVariable int id) {
         try{
             Bank bank1 = bankServices.addBank(bank,id);
-            return new ResponseData<>(HttpStatus.OK.value(), "add Success", LocalDateTime.now(),bank1);
+            return new ResponseData<>(HttpStatus.OK.value(), "Add bank for " + id +  " Success", LocalDateTime.now(),bank1);
         }
         catch (RuntimeException e){
             return new ResponseData<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());

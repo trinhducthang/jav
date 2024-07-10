@@ -37,4 +37,9 @@ public class HomeController {
     public String transfer(Model model) {
         return "transfer";
     }
+
+    @GetMapping("/createBank")
+    public String createBank(Model model) {
+        return "createbank";
+    }
 }

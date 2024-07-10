@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Create Bank</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 50px;
+        }
+        .form-container {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+        }
+        .form-container h2 {
+            text-align: center;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+        .form-group button {
+            width: 100%;
+            padding: 10px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .form-group button:hover {
+            background-color: #3498db;
+        }
+    </style>
+</head>
+<body>
+
+<div class="form-container">
+    <h2>Create Bank</h2>
+    <form id="createBankForm">
+        <div class="form-group">
+            <label for="name">Bank Name:</label>
+            <select id="name" name="name" required>
+                <option value="MbBank">MbBank</option>
+                <option value="Vcb">Vcb</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="bankNumber">Bank Number:</label>
+            <input type="text" id="bankNumber" name="bankNumber" required>
+        </div>
+        <div class="form-group">
+            <button type="submit">Create Bank</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    document.getElementById('createBankForm').addEventListener('submit', function (event) {
+        event.preventDefault();
+
+        const idString = localStorage.getItem('user_id');
+        const id = parseInt(idString, 10);
+        const jwtToken = localStorage.getItem('jwtToken');
+        const bank = {
+            bankNumber: document.getElementById('bankNumber').value,
+            name: document.getElementById('name').value
+        };
+
+        // Replace with the actual user ID
+        const url = `/addBank/${id}`;
+
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Authorization': 'Bearer ' + jwtToken,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(bank)
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 200) {
+                    alert('Bank added successfully!');
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    });
+</script>
+
+</body>
+</html>

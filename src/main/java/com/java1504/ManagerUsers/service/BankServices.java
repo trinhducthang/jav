@@ -9,6 +9,8 @@ import java.util.List;
 
 @Service
 public interface BankServices {
+
+    @PostAuthorize("returnObject.users.username == authentication.name")
     public Bank addBank(Bank bank, int id);
 
     public List<BankDTO> getBanks();

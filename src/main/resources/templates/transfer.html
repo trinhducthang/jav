@@ -135,6 +135,7 @@
             } catch (error) {
                 console.error('Fetch Error:', error);
                 alert('Bạn chưa có số tài khoản nào! Vui lòng tạo thêm 1 số tài khoản.');
+                window.location.href= '/createBank';
             }
         } else {
             console.error('User ID not found in localStorage');

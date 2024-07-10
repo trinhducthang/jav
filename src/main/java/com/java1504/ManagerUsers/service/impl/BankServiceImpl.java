@@ -34,6 +34,7 @@ public class BankServiceImpl implements BankServices {
         Users users = usersRepository.findById(id).get();
         if(checkOverlap(bank)){
             bank.setUsers(users);
+            bank.setBalance(0);
             return banksRepository.save(bank);
         }
         throw new RuntimeException("Bank exist with id " + id);
