@@ -50,7 +50,8 @@
             box-sizing: border-box;
         }
 
-        button[type="submit"] {
+        button[type="submit"],
+        .google-login-btn {
             background-color: #007bff;
             color: #fff;
             padding: 12px 20px;
@@ -59,9 +60,11 @@
             cursor: pointer;
             width: 100%;
             font-size: 16px;
+            margin-top: 10px;
         }
 
-        button[type="submit"]:hover {
+        button[type="submit"]:hover,
+        .google-login-btn:hover {
             background-color: #0056b3;
         }
 
@@ -84,10 +87,15 @@
                 padding: 20px;
             }
 
-            button[type="submit"] {
+            button[type="submit"],
+            .google-login-btn {
                 padding: 10px;
                 font-size: 14px;
             }
+        }
+
+        .logingg {
+            text-align: center;
         }
     </style>
 </head>
@@ -104,6 +112,15 @@
             <input type="password" id="password" name="password" required>
         </div>
         <button type="submit">Đăng nhập</button>
+        <button type="button" class="google-login-btn" onclick="window.location.href='https://accounts.google.com/o/oauth2/auth?scope=email profile openid\n'+
+'\n'+
+'&redirect_uri=http://localhost:8080/login/oauth2/code/google'+
+'\n'+
+'&response_type=code\n'+
+'\n'+
+'&client_id=483755979458-d864sqc9ddvu640d6jj64kgt4ps72hhs.apps.googleusercontent.com'+
+'\n'+
+'&approval_prompt=force'">Đăng nhập bằng Google</button>
         <div class="signup-link">
             <p>Chưa có tài khoản? <a href="/signup">Đăng ký ngay</a></p>
         </div>

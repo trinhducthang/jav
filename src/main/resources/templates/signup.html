@@ -225,15 +225,20 @@
         })
             .then(response => response.json())
             .then(data => {
-                console.log('Response from server:', data);
-                alert('User created successfully!');
-                // Redirect or handle success as needed
-                // window.location.href = '/success'; // Example redirect
-                window.location.href = '/login';
+                if(data.code === 200){
+                    console.log('Response from server:', data);
+                    alert('User created successfully!');
+                    // Redirect or handle success as needed
+                    // window.location.href = '/success'; // Example redirect
+                    window.location.href = '/login';
+                }
+                else {
+                    alert('Dang ky that bat! '+ data.message)
+                }
             })
             .catch(error => {
                 console.error('Error:', error);
-                alert('An error occurred while processing your request. Please try again.', + error);
+                alert('An error occurred while processing your request. Please try again. ', + error);
             });
 
         // Optionally, you can submit the form to handle non-JavaScript environments

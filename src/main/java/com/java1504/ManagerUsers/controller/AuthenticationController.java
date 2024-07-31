@@ -1,6 +1,8 @@
 package com.java1504.ManagerUsers.controller;
 
 
+import com.java1504.ManagerUsers.model.Users;
+import com.java1504.ManagerUsers.repository.UsersRepository;
 import com.java1504.ManagerUsers.request.AuthenticationRequest;
 import com.java1504.ManagerUsers.request.IntrospectRequest;
 import com.java1504.ManagerUsers.dto.response.ApiResponse;
@@ -12,6 +14,9 @@ import com.nimbusds.jose.JOSEException;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,6 +30,7 @@ import java.text.ParseException;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class AuthenticationController {
     AuthenticationService authenticationService;
+    private final UsersRepository usersRepository;
 
 
     @PostMapping("/token")
@@ -46,6 +52,7 @@ public class AuthenticationController {
                     .build();
         }
     }
+
 
     @PostMapping("/introspect")
     ApiResponse<IntrospectResponse> authenticate(@RequestBody IntrospectRequest request)

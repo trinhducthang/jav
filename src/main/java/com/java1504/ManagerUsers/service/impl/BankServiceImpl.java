@@ -9,6 +9,8 @@ import com.java1504.ManagerUsers.repository.UsersRepository;
 import com.java1504.ManagerUsers.service.BankServices;
 import com.java1504.ManagerUsers.service.UserServices;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -60,7 +62,7 @@ public class BankServiceImpl implements BankServices {
 
 
     @Override
-    public boolean bankTransaction(String source, String destination, long amount) {
+    public Bank bankTransaction(String source, String destination, long amount) {
         Bank bank1 = banksRepository.findByBankNumber(source);
         Bank bank2 = banksRepository.findByBankNumber(destination);
         if(bank1 == null) throw new RuntimeException("Bank source not found");
@@ -71,7 +73,7 @@ public class BankServiceImpl implements BankServices {
             bank2.setBalance(bank2.getBalance() + amount);
             banksRepository.save(bank1);
             banksRepository.save(bank2);
-            return true;
+            return bank1;
         }
     }
 

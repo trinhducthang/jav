@@ -17,4 +17,6 @@ public interface UsersRepository extends JpaRepository<Users, Integer> {
     @Query("SELECT u FROM Users u JOIN u.banks b WHERE b.bankNumber = :bankNumber")
     Users findUserByBankNumber(@Param("bankNumber") String bankNumber);
 
+    Users findByEmail(String email);
+
 }

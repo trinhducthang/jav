@@ -67,11 +67,9 @@ public class AuthenticationService {
 
 
 
-        if(invalidatedTokenRepository.existsById(signedJWT.getJWTClaimsSet().getJWTID())){
-
+        if(invalidatedTokenRepository.existsById(signedJWT.getJWTClaimsSet().getJWTID()) || !expiryTime.after(new Date())){
             return IntrospectResponse.builder()
-                    .valid(
-                            false)
+                    .valid(false)
                     .message(str)
                     .build();
         }
@@ -134,7 +132,7 @@ public class AuthenticationService {
     }
 
 
-    private String generateToken(Users users){
+    public String generateToken(Users users){
         JWSHeader jwsHeader = new JWSHeader(JWSAlgorithm.HS512);
 
         JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()

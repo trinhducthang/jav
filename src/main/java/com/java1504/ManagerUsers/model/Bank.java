@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.format.annotation.NumberFormat;
 
 import java.time.LocalDateTime;
 
@@ -25,6 +26,8 @@ public class Bank {
     @JsonBackReference
     private Users users;
 
+
+    @NumberFormat
     private String bankNumber;
 
 

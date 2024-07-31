@@ -131,6 +131,11 @@
             <h1>Thông tin người dùng</h1>
 
             <div class="info-section">
+                <div class="info-label"></div>
+                <div class="info-value" id="img"><img src=""></div>
+            </div>
+
+            <div class="info-section">
                 <div class="info-label">ID:</div>
                 <div class="info-value" id="id"></div>
             </div>
@@ -256,10 +261,10 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.code === 200 && data.result && data.result.valid === true) {
-                        // Token is valid
+
                     } else {
                         window.location.href = '/login';
-                        window.alert('Token không hợp lệ hoặc đã hết hạn');
+                        // window.alert('Token không hợp lệ hoặc đã hết hạn');
                     }
                 })
                 .catch(error => {
@@ -281,6 +286,7 @@
         })
             .then(response => response.json())
             .then(data => {
+                checkTokenAndRedirect();
                 document.getElementById('id').textContent = data.id;
                 let userId = data.id;
                 console.log('User ID:', userId);  // Gỡ lỗi: in ra user ID
