@@ -112,15 +112,7 @@
             <input type="password" id="password" name="password" required>
         </div>
         <button type="submit">Đăng nhập</button>
-        <button type="button" class="google-login-btn" onclick="window.location.href='https://accounts.google.com/o/oauth2/auth?scope=email profile openid\n'+
-'\n'+
-'&redirect_uri=http://localhost:8080/login/oauth2/code/google'+
-'\n'+
-'&response_type=code\n'+
-'\n'+
-'&client_id=483755979458-d864sqc9ddvu640d6jj64kgt4ps72hhs.apps.googleusercontent.com'+
-'\n'+
-'&approval_prompt=force'">Đăng nhập bằng Google</button>
+        <button type="button" class="google-login-btn" onclick="window.location.href='/oauth2/authorization/google'">Đăng nhập bằng Google</button>
         <div class="signup-link">
             <p>Chưa có tài khoản? <a href="/signup">Đăng ký ngay</a></p>
         </div>

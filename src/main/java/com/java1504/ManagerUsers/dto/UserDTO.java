@@ -22,7 +22,7 @@ public class UserDTO {
     @NotNull(message = "username must be not null")
     private String username;
 
-    @NotNull(message = "password must be not null")
+//    @NotNull(message = "password must be not null")
     private String password;
 
     @NotNull(message = "name must be not null")

@@ -10,7 +10,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserService;
 import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
@@ -19,69 +18,49 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtGra
 import org.springframework.security.web.SecurityFilterChain;
 
 import javax.crypto.spec.SecretKeySpec;
-
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfig {
 
-    @Value("${jwt.signerKey}")
-    private String signerKey;
-
-    private static final String[] PUBLIC_POST_ENDPOINTS = {
+    private final String[] PUBLIC_ENDPOINTS = {
             "/add",
             "/auth/token",
             "/auth/introspect",
-            "/addBank/{id}"
-    };
-
-    private static final String[] PUBLIC_GET_ENDPOINTS = {
+            "/addBank/{id}",
             "/v3/api-docs/**",
             "/swagger-ui.html",
             "/swagger-ui/**",
             "/",
             "/signup",
-            "/auth/logout",
-            "/index",
-            "/login",
-            "/home",
-            "/dashboard",
-            "/transfer",
-            "/getUser/{number}",
-            "/createBank"
+            "/auth/logout"
     };
 
+    @Value("${jwt.signerKey}")
+    private String signerKey;
+
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity
-                .authorizeHttpRequests(request ->
-                        request
-                                .requestMatchers(HttpMethod.POST, PUBLIC_POST_ENDPOINTS).permitAll()
-                                .requestMatchers(HttpMethod.GET, PUBLIC_GET_ENDPOINTS).permitAll()
-                                .requestMatchers(HttpMethod.GET, "user", "/getBanks").hasAuthority("ROLE_ADMIN")
-                                .anyRequest().authenticated()
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http.authorizeHttpRequests(auth -> auth
+                        .requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS).permitAll()
+                        .requestMatchers(HttpMethod.GET, "/v3/api-docs/**", "/swagger-ui/**", "/index", "/login", "/", "/home", "/signup", "/dashboard", "/transfer", "/getUser/{number}", "/createBank",
+                                "/oauth2/signIn")
+                                    .permitAll()
+                        .requestMatchers(HttpMethod.GET, "/user", "/getBanks").hasAuthority("ROLE_ADMIN")
+                        .anyRequest().authenticated()
                 )
-                .oauth2Login(oauth2 ->
-                        oauth2
-                                .loginPage("/login")
-                                .defaultSuccessUrl("/login/oauth2/code/google", true)
-                                .userInfoEndpoint(userInfo ->
-                                        userInfo.oidcUserService(this.oidcUserService())
-                                )
+                .oauth2Login(oauth2 -> oauth2
+                        .loginPage("/login")
+                        .defaultSuccessUrl("/oauth2/loginSuccess",true)
+                        .failureUrl("/oauth2/loginFailure")
                 )
-                .oauth2ResourceServer(oauth2 ->
-                        oauth2.jwt(jwtConfigurer ->
-                                jwtConfigurer.decoder(jwtDecoder())
-                                        .jwtAuthenticationConverter(jwtAuthenticationConverter()))
-                )
+                .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwtConfigurer -> jwtConfigurer
+                        .decoder(jwtDecoder())
+                        .jwtAuthenticationConverter(jwtAuthenticationConverter())
+                ))
                 .csrf(AbstractHttpConfigurer::disable);
 
-        return httpSecurity.build();
-    }
-
-    @Bean
-    public OidcUserService oidcUserService() {
-        return new OidcUserService();
+        return http.build();
     }
 
     @Bean

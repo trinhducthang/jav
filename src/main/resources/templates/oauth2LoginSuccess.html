@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login Success</title>
+</head>
+<body>
+<h1>Login Successful</h1>
+<p>Welcome, <span th:text="${name}">[Name]</span>.</p>
+<p>Email: <span id="username" th:text="${email}">[Email]</span></p>
+<p>Token: <span id="token" th:text="${token}">[Token]</span></p>
+<img th:src="${picture}" alt="Profile Picture"/>
+</body>
+<script>
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const checkTokenAndRedirect = () => {
+            const jwtToken = document.getElementById('token').innerText;
+            const username = document.getElementById('username').innerText;
+
+            localStorage.setItem('jwtToken', jwtToken);
+            localStorage.setItem('username', username);
+
+            if (jwtToken && username) {
+                // Tạo đối tượng yêu cầu xác thực
+                const introspectRequest = {
+                    token: jwtToken
+                };
+
+                // Gửi yêu cầu API để kiểm tra token
+                fetch('/auth/introspect', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(introspectRequest)
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.code === 200 && data.result && data.result.valid === true) { // Kiểm tra mã phản hồi thành công (200) và sự hiện diện của kết quả
+                            // Chuyển hướng đến trang /home nếu token hợp lệ
+                            window.location.href = '/home';
+                        } else {
+                            // Token không hợp lệ, thực hiện hành động khác nếu cần
+                            alert('Token không hợp lệ!');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Lỗi kiểm tra token:', error);
+                    });
+            } else {
+                // Không có token hoặc username, thực hiện hành động khác nếu cần
+                alert('Không có token hoặc username!');
+            }
+        };
+
+        // Gọi hàm kiểm tra token và chuyển hướng khi tải trang
+        checkTokenAndRedirect();
+    });
+</script>
+</html>
