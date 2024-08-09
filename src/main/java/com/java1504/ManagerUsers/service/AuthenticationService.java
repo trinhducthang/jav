@@ -118,6 +118,7 @@ public class AuthenticationService {
         invalidatedTokenRepository.save(invalidatedToken);
     }
 
+
     private SignedJWT verifyToken(String token) throws ParseException, JOSEException {
         JWSVerifier jwsVerifier = new MACVerifier(SINGER_KEY.getBytes());
 

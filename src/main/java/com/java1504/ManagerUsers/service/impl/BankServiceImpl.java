@@ -3,8 +3,10 @@ package com.java1504.ManagerUsers.service.impl;
 import com.java1504.ManagerUsers.dto.BankDTO;
 import com.java1504.ManagerUsers.mapper.BankMapper;
 import com.java1504.ManagerUsers.model.Bank;
+import com.java1504.ManagerUsers.model.TransactionHistory;
 import com.java1504.ManagerUsers.model.Users;
 import com.java1504.ManagerUsers.repository.BanksRepository;
+import com.java1504.ManagerUsers.repository.TransactionHistoryRepository;
 import com.java1504.ManagerUsers.repository.UsersRepository;
 import com.java1504.ManagerUsers.service.BankServices;
 import com.java1504.ManagerUsers.service.UserServices;
@@ -13,7 +15,9 @@ import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -27,6 +31,9 @@ public class BankServiceImpl implements BankServices {
 
     @Autowired
     private UsersRepository usersRepository;
+
+    @Autowired
+    private TransactionHistoryRepository transactionHistoryRepository;
 
     @Autowired
     UserServices userServices;
@@ -69,6 +76,15 @@ public class BankServiceImpl implements BankServices {
         if(bank2 == null) throw new RuntimeException("Bank destination not found");
         if(bank1.getBalance() < amount) throw new RuntimeException("Insufficient funds");
         else{
+            TransactionHistory transactionHistory = new TransactionHistory();
+            transactionHistory.setBank_source(bank1.getBankNumber());
+            transactionHistory.setBank_destination(bank2.getBankNumber());
+            transactionHistory.setAmount(String.valueOf(amount));
+            transactionHistory.setDate(LocalDateTime.now());
+            transactionHistory.setDescription(bank1.getUsers().getName() + " Transfer");
+            transactionHistoryRepository.save(transactionHistory);// save history of transaction
+
+
             bank1.setBalance(bank1.getBalance() - amount);
             bank2.setBalance(bank2.getBalance() + amount);
             banksRepository.save(bank1);

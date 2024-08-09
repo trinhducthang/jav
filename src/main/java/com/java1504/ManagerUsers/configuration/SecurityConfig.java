@@ -33,8 +33,27 @@ public class SecurityConfig {
             "/swagger-ui/**",
             "/",
             "/signup",
-            "/auth/logout"
+            "/auth/logout",
+            "/card/**"
     };
+
+    private final String[] PUBLIC_GET_ENDPOINTS ={
+            "/v3/api-docs/**",
+            "/swagger-ui/**",
+            "/index",
+            "/login",
+            "/",
+            "/home",
+            "/signup",
+            "/dashboard",
+            "/transfer",
+            "/getUser/{number}",
+            "/createBank",
+            "/oauth2/signIn",
+            "/card/**",
+            "/findAll"
+    };
+
 
     @Value("${jwt.signerKey}")
     private String signerKey;
@@ -43,9 +62,7 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS).permitAll()
-                        .requestMatchers(HttpMethod.GET, "/v3/api-docs/**", "/swagger-ui/**", "/index", "/login", "/", "/home", "/signup", "/dashboard", "/transfer", "/getUser/{number}", "/createBank",
-                                "/oauth2/signIn")
-                                    .permitAll()
+                        .requestMatchers(HttpMethod.GET,PUBLIC_GET_ENDPOINTS).permitAll()
                         .requestMatchers(HttpMethod.GET, "/user", "/getBanks").hasAuthority("ROLE_ADMIN")
                         .anyRequest().authenticated()
                 )

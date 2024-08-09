@@ -30,7 +30,6 @@ public class Bank {
     @NumberFormat
     private String bankNumber;
 
-
     private String name;
 
     private long balance;

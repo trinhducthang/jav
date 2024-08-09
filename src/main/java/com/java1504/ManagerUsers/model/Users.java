@@ -40,8 +40,8 @@ public class Users {
     String phone;
     String email;
     String address;
-
     Role role;
+
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
@@ -50,6 +50,9 @@ public class Users {
     @JsonManagedReference
     private Set<Bank> banks;
 
+    @OneToMany(mappedBy = "users",cascade = CascadeType.DETACH)
+    @JsonManagedReference
+    private Set<Card> cards;
 
 
 }

@@ -1,7 +1,6 @@
 package com.java1504.ManagerUsers.repository;
 
 import com.java1504.ManagerUsers.model.Bank;
-import com.java1504.ManagerUsers.model.Users;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

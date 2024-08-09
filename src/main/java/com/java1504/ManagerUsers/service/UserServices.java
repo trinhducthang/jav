@@ -14,6 +14,7 @@ import java.util.Optional;
 @Service
 public interface UserServices {
 
+    public List<Users> findAll();
 
     public boolean deleteUser(int id);
 

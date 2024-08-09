@@ -84,6 +84,11 @@ public class UserServicesImpl implements UserServices {
     }
 
 
+    @Override
+    public List<Users> findAll() {
+        return usersRepository.findAll();
+    }
+
     public boolean deleteUser(int id){
         Users users = usersRepository.findById(id).orElseThrow(() -> new RuntimeException("user not found"));
         usersRepository.delete(users);

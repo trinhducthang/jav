@@ -86,11 +86,6 @@ public class UsersController {
         }
     }
 
-    @GetMapping("/pageable")
-    public ResponseData<?> getUserPageable(@RequestParam Integer page){
-        Page<Users> usersPage = userServices.getUsers(page);
-        return new ResponseData<>(HttpStatus.OK.value(),"ok",LocalDateTime.now(),usersPage);
-    }
 
     @GetMapping("/api/user/{username}")
     public Optional<Users> getUserByUsername(@PathVariable String username) {
@@ -115,6 +110,11 @@ public class UsersController {
         catch (RuntimeException e){
             return e.getMessage();
         }
+    }
+
+    @GetMapping("/findAll")
+    public List<Users> findAll(){
+        return userServices.findAll();
     }
 
 }
