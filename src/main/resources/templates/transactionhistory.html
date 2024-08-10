@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transaction History</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+
+        .transaction-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .transaction {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .transaction:last-child {
+            border-bottom: none;
+        }
+
+        .transaction-details {
+            flex: 1;
+        }
+
+        .transaction-details p {
+            margin: 5px 0;
+            color: #555;
+        }
+
+        .transaction-amount {
+            font-weight: bold;
+            color: #1a73e8;
+        }
+
+        .transaction-date {
+            font-size: 0.9em;
+            color: #777;
+        }
+
+        .transaction-description {
+            font-size: 0.9em;
+            color: #888;
+        }
+
+        .download-button {
+            display: block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            background-color: #1a73e8;
+            color: #fff;
+            text-align: center;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            max-width: 200px;
+        }
+
+        .download-button:hover {
+            background-color: #155ab6;
+        }
+
+        .pagination {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .pagination button {
+            background-color: #1a73e8;
+            color: #fff;
+            border: none;
+            padding: 10px 15px;
+            margin: 0 5px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .pagination button.disabled {
+            background-color: #ddd;
+            cursor: not-allowed;
+        }
+
+        .pagination button:hover:not(.disabled) {
+            background-color: #155ab6;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Transaction History</h2>
+<div class="transaction-container" id="transactionHistory">
+    <!-- Transactions will be added here by JavaScript -->
+</div>
+
+<div class="pagination" id="pagination"></div>
+
+<a href="#" class="download-button" id="downloadCSV">Download history of transaction</a>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const transactionsPerPage = 5; // Number of transactions per page
+        let currentPage = 1;
+        let transactions = [];
+
+        function fetchTransactionHistory(userId) {
+            fetch(`/transfer/${userId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 200) {
+                        transactions = data.data;
+                        renderTransactions();
+                        setupDownloadButton();
+                        setupPagination();
+                    } else {
+                        alert('Failed to load transaction history');
+                    }
+                })
+                .catch(error => console.error('Error fetching transaction history:', error));
+        }
+
+        function renderTransactions() {
+            const container = document.getElementById('transactionHistory');
+            container.innerHTML = ''; // Clear old content
+
+            const paginatedTransactions = paginate(transactions, currentPage);
+            paginatedTransactions.forEach(transaction => {
+                const transactionElement = document.createElement('div');
+                transactionElement.className = 'transaction';
+
+                transactionElement.innerHTML = `
+                    <div class="transaction-details">
+                        <p><strong>From:</strong> ${transaction.bank_source}</p>
+                        <p><strong>To:</strong> ${transaction.bank_destination}</p>
+                        <p class="transaction-amount">Amount: ${transaction.amount}</p>
+                        <p class="transaction-date">Date: ${new Date(transaction.date).toLocaleString()}</p>
+                        <p class="transaction-description">Description: ${transaction.description}</p>
+                    </div>
+                `;
+
+                container.appendChild(transactionElement);
+            });
+        }
+
+        function paginate(items, page) {
+            const start = (page - 1) * transactionsPerPage;
+            const end = start + transactionsPerPage;
+            return items.slice(start, end);
+        }
+
+        function setupPagination() {
+            const paginationContainer = document.getElementById('pagination');
+            paginationContainer.innerHTML = ''; // Clear old pagination
+
+            const totalPages = Math.ceil(transactions.length / transactionsPerPage);
+
+            // Previous button
+            const prevButton = document.createElement('button');
+            prevButton.textContent = 'Previous';
+            prevButton.className = currentPage === 1 ? 'disabled' : '';
+            prevButton.disabled = currentPage === 1;
+            prevButton.addEventListener('click', () => {
+                if (currentPage > 1) {
+                    currentPage--;
+                    renderTransactions();
+                    setupPagination();
+                }
+            });
+            paginationContainer.appendChild(prevButton);
+
+            // Page number buttons
+            for (let i = 1; i <= totalPages; i++) {
+                const pageButton = document.createElement('button');
+                pageButton.textContent = i;
+                pageButton.className = i === currentPage ? 'disabled' : '';
+                pageButton.disabled = i === currentPage;
+                pageButton.addEventListener('click', () => {
+                    currentPage = i;
+                    renderTransactions();
+                    setupPagination();
+                });
+                paginationContainer.appendChild(pageButton);
+            }
+
+            // Next button
+            const nextButton = document.createElement('button');
+            nextButton.textContent = 'Next';
+            nextButton.className = currentPage === totalPages ? 'disabled' : '';
+            nextButton.disabled = currentPage === totalPages;
+            nextButton.addEventListener('click', () => {
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    renderTransactions();
+                    setupPagination();
+                }
+            });
+            paginationContainer.appendChild(nextButton);
+        }
+
+        function setupDownloadButton() {
+            const button = document.getElementById('downloadCSV');
+            button.addEventListener('click', () => {
+                const csvContent = generateCSV(transactions);
+                const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.setAttribute('href', url);
+                link.setAttribute('download', 'transaction_history.csv');
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            });
+        }
+
+        function generateCSV(transactions) {
+            const header = ['From', 'To', 'Amount', 'Date', 'Description'];
+            const rows = transactions.map(transaction => [
+                transaction.bank_source,
+                transaction.bank_destination,
+                transaction.amount,
+                new Date(transaction.date).toLocaleString(),
+                transaction.description
+            ]);
+
+            const csvContent = [
+                header.join(','),
+                ...rows.map(row => row.join(','))
+            ].join('\n');
+
+            return csvContent;
+        }
+
+        const userId_check = localStorage.getItem('user_id');
+        if (userId_check) {
+            fetchTransactionHistory(userId_check);
+        } else {
+            alert('User ID is not available');
+        }
+    });
+</script>
+
+</body>
+</html>

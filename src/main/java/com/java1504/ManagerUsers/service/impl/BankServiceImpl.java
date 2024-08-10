@@ -82,8 +82,8 @@ public class BankServiceImpl implements BankServices {
             transactionHistory.setAmount(String.valueOf(amount));
             transactionHistory.setDate(LocalDateTime.now());
             transactionHistory.setDescription(bank1.getUsers().getName() + " Transfer");
-            transactionHistoryRepository.save(transactionHistory);// save history of transaction
-
+            transactionHistory.setUsers(bank1.getUsers());
+            transactionHistoryRepository.save(transactionHistory);//
 
             bank1.setBalance(bank1.getBalance() - amount);
             bank2.setBalance(bank2.getBalance() + amount);

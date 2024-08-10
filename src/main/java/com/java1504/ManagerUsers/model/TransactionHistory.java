@@ -1,5 +1,6 @@
 package com.java1504.ManagerUsers.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -26,5 +27,10 @@ public class TransactionHistory {
     private LocalDateTime date;
 
     private String description;
+
+    @ManyToOne
+    @JoinColumn(name = "users_id",nullable = false,referencedColumnName = "id")
+    @JsonBackReference
+    private Users users;
 
 }

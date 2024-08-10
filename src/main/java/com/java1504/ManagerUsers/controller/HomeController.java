@@ -44,9 +44,11 @@ public class HomeController {
         return "createbank";
     }
 
-    @GetMapping("/home2")
-    public String home2(Model model) {
-        return "home2";
+    @GetMapping("/trahistory")
+    public String trahistory(Model model) {
+        return "transactionhistory";
     }
+
+
 
 }

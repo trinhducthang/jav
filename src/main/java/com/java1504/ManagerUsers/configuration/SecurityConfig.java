@@ -51,7 +51,10 @@ public class SecurityConfig {
             "/createBank",
             "/oauth2/signIn",
             "/card/**",
-            "/findAll"
+            "/findAll",
+            "/transfer/{id}",
+            "/trahistory",
+            "/transaction-csv"
     };
 
 

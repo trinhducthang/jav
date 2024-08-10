@@ -54,5 +54,9 @@ public class Users {
     @JsonManagedReference
     private Set<Card> cards;
 
+    @OneToMany(mappedBy = "users",cascade = CascadeType.DETACH)
+    @JsonManagedReference
+    private Set<TransactionHistory> transactionHistories;
+
 
 }

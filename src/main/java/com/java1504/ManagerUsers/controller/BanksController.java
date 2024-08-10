@@ -5,8 +5,12 @@ import com.java1504.ManagerUsers.dto.BankDTO;
 import com.java1504.ManagerUsers.model.Bank;
 import com.java1504.ManagerUsers.dto.response.ResponseData;
 import com.java1504.ManagerUsers.service.BankServices;
+import com.java1504.ManagerUsers.service.TransactionHistoryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,6 +22,9 @@ public class BanksController {
 
     @Autowired
     BankServices bankServices;
+
+    @Autowired
+    TransactionHistoryService transactionHistoryService;
 
     @PostMapping("/addBank/{id}")
     public ResponseData<?> addBank(@RequestBody Bank bank, @PathVariable int id) {
@@ -66,5 +73,18 @@ public class BanksController {
         }
     }
 
+    @GetMapping("/transfer/{id}")
+    public ResponseData<?> bankTransaction(@PathVariable int id) {
+        return new ResponseData<>(HttpStatus.OK.value(),"Get successfully!",LocalDateTime.now(),transactionHistoryService.getTransactionHistoryByUser(id));
+    }
+
+    @GetMapping("/transaction-csv")
+    public ResponseEntity<String> downloadCsv() {
+        String csvData = transactionHistoryService.generateCsvData();
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=transaction_history.csv")
+                .contentType(MediaType.parseMediaType("text/csv"))
+                .body(csvData);
+    }
 
 }
