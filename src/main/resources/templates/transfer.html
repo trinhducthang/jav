@@ -174,7 +174,7 @@
 
             const data = await response.json();
 
-            if (response.ok && data.message !== 'Bank not found' && data.message !== 'Insufficient funds') {
+            if (response.ok && data.message !== 'Bank not found' && data.message !== 'Insufficient funds' && data.message !== 'Failed to evaluate expression \'returnObject.users.username == authentication.name\'' ) {
                 console.log('Transfer Success:', data);
                 alert('Chuyển tiền thành công');
             } else {
@@ -185,6 +185,9 @@
                 }
                 else if(data.message === 'Insufficient funds'){
                     alert(`Số tiền không đủ để chuyển`);
+                }
+                else if(data.status === 400){
+                    alert('Access denice');
                 }
                 else {
                     alert('Đã xảy ra lỗi khi chuyển tiền');

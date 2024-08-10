@@ -65,8 +65,7 @@ public class BanksController {
             String destination = (String) transactionDetails.get("destination");
             Number amountNumber = (Number) transactionDetails.get("amount");
             long amount = amountNumber.longValue();
-            Bank success = bankServices.bankTransaction(source,destination,amount);
-            return new ResponseData<>(HttpStatus.OK.value(),String.valueOf(success));
+            return new ResponseData<>(HttpStatus.OK.value(),String.valueOf(bankServices.bankTransaction(source,destination,amount)));
         }
         catch (RuntimeException e){
             return new ResponseData<>(HttpStatus.BAD_REQUEST.value(),e.getMessage());

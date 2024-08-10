@@ -18,7 +18,7 @@ public interface BankServices {
 
     public Bank updateBank(BankDTO bankDTO, int id);
 
-    @PostAuthorize("returnObject.users.username == authentication.name")
+    @PreAuthorize("returnObject.users.username == authentication.name")
     public Bank bankTransaction(String source, String destination, long amount);
 
 }
