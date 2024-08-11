@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
+    <link rel="icon" type="image/x-icon" href="/imgs/favicon.png"/>
     <style>
         /* CSS cơ bản */
         body {
@@ -85,9 +86,11 @@
         .action-buttons button.edit:hover {
             background-color: #0056b3;
         }
+
         #addUserForm {
             font-family: Arial, sans-serif;
             font-size: 14px;
+            display: none; /* Ẩn form thêm người dùng */
         }
 
         #addUserForm h2 {
@@ -132,8 +135,27 @@
             font-size: 14px;
         }
 
-
         #addUserForm button[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .pagination button {
+            margin: 0 5px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        .pagination button:hover {
             background-color: #0056b3;
         }
     </style>
@@ -161,10 +183,13 @@
         </tbody>
     </table>
 
+    <div class="pagination" id="paginationControls">
+        <!-- Nút phân trang sẽ được thêm vào đây -->
+    </div>
+
     <hr>
 
     <!-- Thêm form nhập liệu người dùng -->
-    <!-- Form thêm người dùng -->
     <div id="addUserForm">
         <h2>Thêm người dùng</h2>
         <hr>
@@ -198,9 +223,7 @@
         </form>
     </div>
 
-
     <div class="action-buttons">
-<!--        <button onclick="loadUsers()">Tải danh sách người dùng</button>-->
         <button onclick="openAddUserForm()">Thêm người dùng</button>
     </div>
 </div>
@@ -215,6 +238,10 @@
         alert('Vui lòng đăng nhập để truy cập vào trang này.');
         window.location.href = '/login'; // Chuyển hướng về trang đăng nhập nếu không có token
     }
+
+    let currentPage = 1;
+    const usersPerPage = 10;
+    let totalUsers = 0;
 
     // Hàm gọi API để lấy danh sách người dùng từ backend
     const loadUsers = () => {
@@ -232,27 +259,9 @@
                 return response.json();
             })
             .then(data => {
-                const userTableBody = document.getElementById('userTableBody');
-                userTableBody.innerHTML = ''; // Xóa dữ liệu cũ
-
-                // Hiển thị từng người dùng trong bảng
-                data.forEach(user => {
-                    const row = `<tr>
-                    <td>${user.id}</td>
-                    <td>${user.username}</td>
-                    <td>${user.name}</td>
-                    <td>${user.gender}</td>
-                    <td>${user.email}</td>
-                    <td>${user.address}</td>
-                    <td>${user.role}</td>
-                    <td>${user.createdAt}</td>
-                    <td>
-                        <button class="edit" onclick="openEditUserForm(${user.id})">Sửa</button>
-                        <button class="delete" onclick="deleteUser(${user.id})">Xóa</button>
-                    </td>
-                </tr>`;
-                    userTableBody.innerHTML += row;
-                });
+                totalUsers = data.length;
+                displayUsers(data);
+                setupPagination();
             })
             .catch(error => {
                 console.error('Lỗi khi tải danh sách người dùng:', error);
@@ -260,10 +269,62 @@
             });
     };
 
-    // Hàm xóa người dùng theo ID
-    const deleteUser = (id) => {
-        if (confirm('Bạn có chắc muốn xóa người dùng này?')) {
-            fetch(`/delete/${id}`, {
+    // Hàm hiển thị người dùng theo trang
+    const displayUsers = (data) => {
+        const userTableBody = document.getElementById('userTableBody');
+        userTableBody.innerHTML = ''; // Xóa dữ liệu cũ
+
+        const start = (currentPage - 1) * usersPerPage;
+        const end = start + usersPerPage;
+        const paginatedUsers = data.slice(start, end);
+
+        // Hiển thị từng người dùng trong bảng
+        paginatedUsers.forEach(user => {
+            const row = `<tr>
+                <td>${user.id}</td>
+                <td>${user.username}</td>
+                <td>${user.name}</td>
+                <td>${user.gender}</td>
+                <td>${user.email}</td>
+                <td>${user.address}</td>
+                <td>${user.role}</td>
+                <td>${user.createdAt}</td>
+                <td>
+                    <button class="edit" onclick="openEditUserForm(${user.id})">Sửa</button>
+                    <button class="delete" onclick="deleteUser(${user.id})">Xóa</button>
+                </td>
+            </tr>`;
+            userTableBody.innerHTML += row;
+        });
+    };
+
+    // Hàm thiết lập các nút phân trang
+    const setupPagination = () => {
+        const paginationControls = document.getElementById('paginationControls');
+        paginationControls.innerHTML = ''; // Xóa các nút cũ
+
+        const totalPages = Math.ceil(totalUsers / usersPerPage);
+
+        for (let i = 1; i <= totalPages; i++) {
+            const button = document.createElement('button');
+            button.textContent = i;
+            button.onclick = () => {
+                currentPage = i;
+                loadUsers();
+            };
+            paginationControls.appendChild(button);
+        }
+    };
+
+    // Hàm mở form thêm người dùng
+    const openAddUserForm = () => {
+        document.getElementById('addUserForm').style.display = 'block';
+    };
+
+    // Hàm xóa người dùng
+    const deleteUser = (userId) => {
+        if (confirm('Bạn có chắc chắn muốn xóa người dùng này không?')) {
+            fetch(`/delete/${userId}`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': 'Bearer ' + jwtToken
@@ -273,10 +334,7 @@
                     if (!response.ok) {
                         throw new Error('Không thể xóa người dùng.');
                     }
-                    return response.json();
-                })
-                .then(data => {
-                    alert(data.message);
+                    alert('Xóa người dùng thành công.');
                     loadUsers(); // Tải lại danh sách người dùng sau khi xóa
                 })
                 .catch(error => {
@@ -286,54 +344,8 @@
         }
     };
 
-    // Hàm mẫu để mở form thêm người dùng (có thể triển khai sau)
-    const openAddUserForm = () => {
-        const form = document.getElementById('addUserForm');
-        form.style.display = form.style.display === 'none' ? 'block' : 'none';
-    };
-
-    document.getElementById('userForm').addEventListener('submit', async (event) => {
-        event.preventDefault();
-
-        const formData = {
-            username: document.getElementById('username').value,
-            password: document.getElementById('password').value,
-            name: document.getElementById('name').value,
-            email: document.getElementById('email').value,
-            gender: document.getElementById('gender').value,
-            phone: document.getElementById('phone').value,
-            address: document.getElementById('address').value
-        };
-
-        try {
-            const response = await fetch('/add', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(formData)
-            });
-
-            if (response.ok) {
-                const data = await response.json();
-                alert('User added successfully');
-            } else {
-                const errorData = await response.json();
-                alert(`Error: ${errorData.message}`);
-            }
-        } catch (error) {
-            alert('An error occurred while adding the user');
-        }
-    });
-
-    // Hàm mẫu để mở form sửa người dùng (có thể triển khai sau)
-    const openEditUserForm = (id) => {
-        alert(`Chức năng sửa người dùng với ID ${id} chưa được triển khai.`);
-    };
-
-    // Tải danh sách người dùng khi trang được tải
-    document.addEventListener('DOMContentLoaded', loadUsers);
+    // Gọi hàm loadUsers khi trang được tải
+    loadUsers();
 </script>
-
 </body>
 </html>

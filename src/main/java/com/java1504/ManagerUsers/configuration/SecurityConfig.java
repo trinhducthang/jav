@@ -57,6 +57,13 @@ public class SecurityConfig {
             "/transaction-csv"
     };
 
+    private final String[] PUBLIC_UI_ENDPOINTS ={
+            "/css/loginStyle.css",
+            "/js/loginJs.js",
+            "/imgs/favicon.png"
+
+    };
+
 
     @Value("${jwt.signerKey}")
     private String signerKey;
@@ -66,6 +73,7 @@ public class SecurityConfig {
         http.authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS).permitAll()
                         .requestMatchers(HttpMethod.GET,PUBLIC_GET_ENDPOINTS).permitAll()
+                        .requestMatchers(HttpMethod.GET, PUBLIC_UI_ENDPOINTS).permitAll()
                         .requestMatchers(HttpMethod.GET, "/user", "/getBanks").hasAuthority("ROLE_ADMIN")
                         .anyRequest().authenticated()
                 )

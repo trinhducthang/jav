@@ -13,6 +13,8 @@ import com.java1504.ManagerUsers.service.UserServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -75,6 +77,13 @@ public class BankServiceImpl implements BankServices {
         if(bank1 == null) throw new RuntimeException("Bank source not found");
         if(bank2 == null) throw new RuntimeException("Bank destination not found");
         if(bank1.getBalance() < amount) throw new RuntimeException("Insufficient funds");
+
+
+        //check authentication if false => break
+        String authenticationName = SecurityContextHolder.getContext().getAuthentication().getName();
+        String username = bank1.getUsers().getUsername();
+        if(!authenticationName.equals(username)) throw new RuntimeException("Invalid authentication");
+
         else{
             TransactionHistory transactionHistory = new TransactionHistory();
             transactionHistory.setBank_source(bank1.getBankNumber());
@@ -84,13 +93,13 @@ public class BankServiceImpl implements BankServices {
             transactionHistory.setDescription(bank1.getUsers().getName() + " Transfer");
             transactionHistory.setUsers(bank1.getUsers());
             transactionHistoryRepository.save(transactionHistory);//
-
             bank1.setBalance(bank1.getBalance() - amount);
             bank2.setBalance(bank2.getBalance() + amount);
             banksRepository.save(bank1);
             banksRepository.save(bank2);
-            return bank1;
+            return banksRepository.save(bank1);
         }
+
     }
 
 
