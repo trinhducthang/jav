@@ -18,7 +18,6 @@ public interface BankServices {
 
     public Bank updateBank(BankDTO bankDTO, int id);
 
-
     public Bank bankTransaction(String source, String destination, long amount);
 
 }

@@ -298,6 +298,7 @@
                 document.getElementById('gender').textContent = data.gender;
                 document.getElementById('phone').textContent = data.phone;
                 document.getElementById('email').textContent = data.email;
+                localStorage.setItem('user_email', data.email);
                 document.getElementById('address').textContent = data.address;
                 document.getElementById('role').textContent = data.role;
                 document.getElementById('create_at').textContent = data.createdAt;

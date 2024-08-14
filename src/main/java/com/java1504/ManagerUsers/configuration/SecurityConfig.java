@@ -34,7 +34,8 @@ public class SecurityConfig {
             "/",
             "/signup",
             "/auth/logout",
-            "/card/**"
+            "/card/**",
+            "/verify-code"
     };
 
     private final String[] PUBLIC_GET_ENDPOINTS ={
@@ -54,7 +55,8 @@ public class SecurityConfig {
             "/findAll",
             "/transfer/{id}",
             "/trahistory",
-            "/transaction-csv"
+            "/transaction-csv",
+            "/send-email"
     };
 
     private final String[] PUBLIC_UI_ENDPOINTS ={
