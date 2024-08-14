@@ -65,11 +65,6 @@ public class UserServicesImpl implements UserServices {
         return true;
     }
 
-    @Override
-    public Page<Users> getUsers(Integer pageNo) {
-        Pageable pageable = PageRequest.of(pageNo-1, 2);
-        return usersRepository.findAll(pageable);
-    }
 
     @Override
     public Optional<Users> findByUsername(String username) {

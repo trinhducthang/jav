@@ -29,8 +29,6 @@ public interface UserServices {
 
     public boolean checkOverlap(UserDTO userDTO);
 
-    Page<Users> getUsers(Integer pageNo);
-
     @PostAuthorize("returnObject.isPresent() ? returnObject.get().username == authentication.name : false")
     public Optional<Users> findByUsername(String username);
 
