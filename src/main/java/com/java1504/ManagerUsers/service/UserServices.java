@@ -32,8 +32,5 @@ public interface UserServices {
     @PostAuthorize("returnObject.isPresent() ? returnObject.get().username == authentication.name : false")
     public Optional<Users> findByUsername(String username);
 
-    @PostAuthorize("returnObject[0].users.username == authentication.name")
-    public List<Bank> getBankByUser(Integer id);
-
     public String getNameByNumber(String number);
 }

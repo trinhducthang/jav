@@ -20,4 +20,7 @@ public interface BankServices {
 
     public Bank bankTransaction(String source, String destination, long amount);
 
+    @PostAuthorize("returnObject[0].users.username == authentication.name")
+    public List<Bank> getBankByUser(Integer id);
+
 }

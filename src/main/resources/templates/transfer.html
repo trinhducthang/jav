@@ -1,3 +1,282 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="vi">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--    <title>Chuyển Tiền</title>-->
+<!--    <link rel="icon" type="image/x-icon" href="/imgs/favicon.png"/>-->
+<!--    <link rel="stylesheet" type="text/css" th:href="@{/css/transfer.css}">-->
+<!--    <style>-->
+<!--        body {-->
+<!--            font-family: sans-serif;-->
+<!--            margin: 0;-->
+<!--            padding: 0;-->
+<!--            background-color: #f4f4f4;-->
+<!--        }-->
+
+<!--        .container {-->
+<!--            width: 50%;-->
+<!--            margin: 100px auto;-->
+<!--            padding: 30px;-->
+<!--            background-color: #fff;-->
+<!--            border-radius: 10px;-->
+<!--            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);-->
+<!--        }-->
+
+<!--        h1 {-->
+<!--            text-align: center;-->
+<!--            margin-bottom: 20px;-->
+<!--        }-->
+
+<!--        .form-group {-->
+<!--            margin-bottom: 15px;-->
+<!--        }-->
+
+<!--        .form-group label {-->
+<!--            display: block;-->
+<!--            margin-bottom: 5px;-->
+<!--            font-weight: bold;-->
+
+<!--            border-radius: 15px;-->
+<!--        }-->
+
+<!--        .form-group select,-->
+<!--        .form-group input {-->
+<!--            width: 100%;-->
+<!--            padding: 8px;-->
+<!--            box-sizing: border-box;-->
+<!--        }-->
+
+<!--        button[type="submit"] {-->
+<!--            background-color: #007bff;-->
+<!--            color: #fff;-->
+<!--            padding: 12px 20px;-->
+<!--            border: none;-->
+<!--            border-radius: 5px;-->
+<!--            cursor: pointer;-->
+<!--            display: block;-->
+<!--            margin: 0 auto;-->
+<!--        }-->
+
+<!--        button[type="submit"]:hover {-->
+<!--            background-color: #0056b3;-->
+<!--        }-->
+<!--        .overlay {-->
+<!--            position: fixed;-->
+<!--            top: 0;-->
+<!--            left: 0;-->
+<!--            width: 100%;-->
+<!--            height: 100%;-->
+<!--            background: rgba(0, 0, 0, 0.5);-->
+<!--            display: none;-->
+<!--            justify-content: center;-->
+<!--            align-items: center;-->
+<!--        }-->
+
+<!--        .verification-dialog {-->
+<!--            background: #fff;-->
+<!--            padding: 20px;-->
+<!--            border-radius: 10px;-->
+<!--            width: 300px;-->
+<!--            text-align: center;-->
+<!--        }-->
+
+<!--        .verification-dialog input {-->
+<!--            width: 100%;-->
+<!--            padding: 10px;-->
+<!--            margin-bottom: 10px;-->
+<!--        }-->
+
+<!--        .verification-dialog button {-->
+<!--            background-color: #28a745;-->
+<!--            color: #fff;-->
+<!--            border: none;-->
+<!--            padding: 10px;-->
+<!--            border-radius: 5px;-->
+<!--            cursor: pointer;-->
+<!--        }-->
+
+<!--        .verification-dialog button:hover {-->
+<!--            background-color: #218838;-->
+<!--        }-->
+<!--    </style>-->
+<!--</head>-->
+<!--<body>-->
+<!--<div class="container">-->
+<!--    <h1>Chuyển Tiền</h1>-->
+<!--    <form id="transactionForm">-->
+<!--        <div class="form-group">-->
+<!--            <label for="source">Tài khoản gửi:</label>-->
+<!--            <select id="source" name="source" required></select>-->
+<!--        </div>-->
+<!--        <div class="form-group">-->
+<!--            <label for="destination">Số tài khoản nhận:</label>-->
+<!--            <input type="text" id="destination" name="destination" required>-->
+<!--        </div>-->
+<!--        <div class="form-group">-->
+<!--            <label for="receiverName">Tên người nhận:</label>-->
+<!--            <input type="text" id="receiverName" name="receiverName" readonly>-->
+<!--        </div>-->
+<!--        <div class="form-group">-->
+<!--            <label for="amount">Số tiền:</label>-->
+<!--            <input type="number" id="amount" name="amount" required>-->
+<!--        </div>-->
+<!--        <button type="submit">Chuyển tiền</button>-->
+<!--    </form>-->
+<!--    <a href="/trahistory">Lịch sử giao dịch</a>-->
+<!--</div>-->
+
+<!--<div id="verificationOverlay" class="overlay">-->
+<!--    <div class="verification-dialog">-->
+<!--        <h2>Xác thực mã</h2>-->
+<!--        <p>Vui lòng kiểm tra email của bạn và nhập mã xác thực dưới đây:</p>-->
+<!--        <input type="text" id="verificationCode" placeholder="Nhập mã xác thực">-->
+<!--        <button id="verifyCodeButton">Xác thực</button>-->
+<!--    </div>-->
+<!--</div>-->
+<!--</div>-->
+
+<!--<script>-->
+<!--    document.addEventListener('DOMContentLoaded', async () => {-->
+<!--        const idString = localStorage.getItem('user_id');-->
+<!--        console.log('Stored User ID:', idString);-->
+
+<!--        if (idString) {-->
+<!--            const id = parseInt(idString, 10);-->
+<!--            console.log('Parsed User ID:', id);-->
+<!--            const jwtToken = localStorage.getItem('jwtToken');-->
+
+<!--            try {-->
+<!--                const response = await fetch(`/getBanks/${id}`, {-->
+<!--                    method: 'GET',-->
+<!--                    headers: {-->
+<!--                        'Authorization': 'Bearer ' + jwtToken,-->
+<!--                        'Content-Type': 'application/json'-->
+<!--                    }-->
+<!--                });-->
+
+<!--                if (response.ok) {-->
+<!--                    const responseData = await response.json();-->
+<!--                    console.log('API Response:', responseData);-->
+
+<!--                    if (responseData.status === 200 && responseData.data) {-->
+<!--                        const senderAccounts = responseData.data;-->
+<!--                        const sourceSelect = document.getElementById('source');-->
+
+<!--                        // Populate options for source account select-->
+<!--                        senderAccounts.forEach(account => {-->
+<!--                            const option = document.createElement('option');-->
+<!--                            option.value = account.bankNumber; // Use bankNumber as value-->
+<!--                            option.textContent = account.bankNumber + ' | Số dư: ' + account.balance;-->
+<!--                            sourceSelect.appendChild(option);-->
+<!--                        });-->
+<!--                    }-->
+<!--                    else if(responseData.data.message === 'Failed to evaluate expression \'returnObject[0].users.username == authentication.name\''){-->
+<!--                        alert(`Bạn chưa có số tài khoản nào! Vui lòng tạo thêm 1 số tài khoản.`)-->
+<!--                    }-->
+<!--                    else {-->
+<!--                        console.error('API Error:', responseData.message);-->
+<!--                        alert(`Lỗi: ${responseData.message}`);-->
+
+<!--                        // alert(`Chưa có số tài khoản nào vui lòng tạo 1 số tài khoản mới!`)-->
+<!--                    }-->
+<!--                } else {-->
+<!--                    const errorData = await response.json();-->
+<!--                    console.error('API Error:', errorData);-->
+<!--                    alert(`Lỗi: ${errorData.message}`);-->
+<!--                }-->
+<!--            } catch (error) {-->
+<!--                console.error('Fetch Error:', error);-->
+<!--                alert('Bạn chưa có số tài khoản nào! Vui lòng tạo thêm 1 số tài khoản.');-->
+<!--                window.location.href= '/createBank';-->
+<!--            }-->
+<!--        } else {-->
+<!--            console.error('User ID not found in localStorage');-->
+<!--            alert('Không tìm thấy user ID. Vui lòng đăng nhập lại.');-->
+<!--            window.location.href = '/login';-->
+<!--        }-->
+<!--    });-->
+
+
+<!--    document.getElementById('transactionForm').addEventListener('submit', async (event) => {-->
+<!--        event.preventDefault();-->
+
+<!--        const transactionDetails = {-->
+<!--            source: document.getElementById('source').value,-->
+<!--            destination: document.getElementById('destination').value,-->
+<!--            amount: parseFloat(document.getElementById('amount').value)-->
+<!--        };-->
+
+<!--        console.log('Transaction Details:', transactionDetails); // Log dữ liệu trước khi gửi-->
+
+<!--        const jwtToken = localStorage.getItem('jwtToken');-->
+
+<!--        try {-->
+<!--            const response = await fetch(`/transfer/${transactionDetails.source}`, {-->
+<!--                method: 'POST',-->
+<!--                headers: {-->
+<!--                    'Content-Type': 'application/json',-->
+<!--                    'Authorization': 'Bearer ' + jwtToken-->
+<!--                },-->
+<!--                body: JSON.stringify(transactionDetails)-->
+<!--            });-->
+
+<!--            const data = await response.json();-->
+
+<!--            if (response.ok && data.message !== 'Bank not found' && data.message !== 'Insufficient funds' && data.message !== 'Invalid authentication' ) {-->
+<!--                console.log('Transfer Success:', data);-->
+<!--                alert('Chuyển tiền thành công');-->
+<!--            } else {-->
+<!--                console.error('Transfer Error:', data);-->
+
+<!--                if (data.message === 'Bank not found' ) {-->
+<!--                    alert(`Số tài khoản không tồn tại`);-->
+<!--                }-->
+<!--                else if(data.message === 'Insufficient funds'){-->
+<!--                    alert(`Số tiền không đủ để chuyển`);-->
+<!--                }-->
+<!--                else if(data.status === 400){-->
+<!--                    alert('Access denice');-->
+<!--                }-->
+<!--                else {-->
+<!--                    alert('Đã xảy ra lỗi khi chuyển tiền');-->
+<!--                }-->
+<!--            }-->
+<!--        } catch (error) {-->
+<!--            console.error('Fetch Error:', error);-->
+<!--            alert('Đã xảy ra lỗi khi chuyển tiền');-->
+<!--        }-->
+<!--    });-->
+
+<!--    document.getElementById('destination').addEventListener('blur', async (event) => {-->
+<!--        const destinationAccount = event.target.value;-->
+<!--        const jwtToken = localStorage.getItem('jwtToken');-->
+
+<!--        try {-->
+<!--            const response = await fetch(`/getUser/${destinationAccount}`, {-->
+<!--                method: 'GET',-->
+<!--                headers: {-->
+<!--                    'Authorization': 'Bearer ' + jwtToken,-->
+<!--                    'Content-Type': 'application/json'-->
+<!--                }-->
+<!--            });-->
+
+<!--            if (response.ok) {-->
+<!--                const data = await response.text();-->
+<!--                document.getElementById('receiverName').value = data;-->
+<!--            } else {-->
+<!--                document.getElementById('receiverName').value = '';-->
+<!--                console.error('Error fetching user name');-->
+<!--            }-->
+<!--        } catch (error) {-->
+<!--            document.getElementById('receiverName').value = '';-->
+<!--            console.error('Fetch Error:', error);-->
+<!--        }-->
+<!--    });-->
+<!--</script>-->
+<!--</body>-->
+<!--</html>-->
+
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -36,7 +315,6 @@
             display: block;
             margin-bottom: 5px;
             font-weight: bold;
-
             border-radius: 15px;
         }
 
@@ -61,6 +339,75 @@
         button[type="submit"]:hover {
             background-color: #0056b3;
         }
+
+        /* Phần nền mờ để làm nổi bật hộp thoại */
+        .verification-overlay {
+            display: none; /* Ẩn mặc định */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.3); /* Nền mờ tối với độ trong suốt */
+            z-index: 999; /* Đưa nền mờ xuống dưới hộp thoại */
+        }
+
+        /* Phần hộp thoại xác thực */
+        .verification-dialog {
+            display: none; /* Ẩn mặc định */
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%); /* Căn giữa theo chiều dọc và ngang */
+            padding: 20px;
+            background-color: #fff; /* Nền trắng cho hộp thoại */
+            border-radius: 10px; /* Bo tròn các góc của hộp thoại */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Đổ bóng nhẹ cho hộp thoại */
+            z-index: 1000; /* Đưa hộp thoại lên trên cùng */
+            width: 90%; /* Chiều rộng hộp thoại 90% của màn hình */
+            max-width: 400px; /* Chiều rộng tối đa của hộp thoại */
+            text-align: center; /* Canh giữa nội dung bên trong hộp thoại */
+        }
+
+        /* Tiêu đề trong hộp thoại */
+        .verification-dialog h3 {
+            margin: 0 0 15px 0; /* Khoảng cách dưới tiêu đề */
+            font-size: 18px; /* Kích thước chữ tiêu đề */
+            color: #333; /* Màu chữ tiêu đề */
+        }
+
+        /* Trường nhập mã xác thực */
+        .verification-dialog input[type="text"] {
+            width: calc(100% - 20px); /* Chiều rộng bằng 100% trừ đi padding */
+            padding: 10px; /* Khoảng cách bên trong input */
+            margin-bottom: 15px; /* Khoảng cách dưới input */
+            border: 1px solid #ccc; /* Đường viền xung quanh input */
+            border-radius: 4px; /* Bo tròn các góc của input */
+            font-size: 16px; /* Kích thước chữ trong input */
+        }
+
+        /* Các nút trong hộp thoại */
+        .verification-dialog button {
+            padding: 10px 15px; /* Khoảng cách bên trong nút */
+            margin: 5px; /* Khoảng cách giữa các nút */
+            border: none; /* Bỏ đường viền */
+            border-radius: 4px; /* Bo tròn các góc của nút */
+            cursor: pointer; /* Hiển thị con trỏ chuột khi di chuột qua nút */
+            font-size: 16px; /* Kích thước chữ trên nút */
+        }
+
+        /* Nút xác nhận */
+        #verifyCodeButton {
+            background-color: #4CAF50; /* Màu nền nút xác nhận */
+            color: white; /* Màu chữ nút xác nhận */
+        }
+
+        /* Nút hủy */
+        #cancelVerification {
+            background-color: #f44336; /* Màu nền nút hủy */
+            color: white; /* Màu chữ nút hủy */
+        }
+
     </style>
 </head>
 <body>
@@ -86,6 +433,14 @@
         <button type="submit">Chuyển tiền</button>
     </form>
     <a href="/trahistory">Lịch sử giao dịch</a>
+</div>
+
+<div class="verification-overlay" id="verificationOverlay"></div>
+<div class="verification-dialog" id="verificationDialog">
+    <h3>Nhập mã xác thực được gửi đến mail của bạn</h3>
+    <input type="text" id="verificationCode" placeholder="Nhập mã xác thực" />
+    <button id="verifyCodeButton">Xác nhận</button>
+    <button id="cancelVerification">Hủy</button>
 </div>
 
 <script>
@@ -115,22 +470,19 @@
                         const senderAccounts = responseData.data;
                         const sourceSelect = document.getElementById('source');
 
-                        // Populate options for source account select
                         senderAccounts.forEach(account => {
                             const option = document.createElement('option');
-                            option.value = account.bankNumber; // Use bankNumber as value
+                            option.value = account.bankNumber;
                             option.textContent = account.bankNumber + ' | Số dư: ' + account.balance;
                             sourceSelect.appendChild(option);
                         });
                     }
-                    else if(responseData.data.message === 'Failed to evaluate expression \'returnObject[0].users.username == authentication.name\''){
-                        alert(`Bạn chưa có số tài khoản nào! Vui lòng tạo thêm 1 số tài khoản.`)
+                    else if (responseData.data.message === 'Failed to evaluate expression \'returnObject[0].users.username == authentication.name\'') {
+                        alert(`Bạn chưa có số tài khoản nào! Vui lòng tạo thêm 1 số tài khoản.`);
                     }
                     else {
                         console.error('API Error:', responseData.message);
                         alert(`Lỗi: ${responseData.message}`);
-
-                        // alert(`Chưa có số tài khoản nào vui lòng tạo 1 số tài khoản mới!`)
                     }
                 } else {
                     const errorData = await response.json();
@@ -140,7 +492,7 @@
             } catch (error) {
                 console.error('Fetch Error:', error);
                 alert('Bạn chưa có số tài khoản nào! Vui lòng tạo thêm 1 số tài khoản.');
-                window.location.href= '/createBank';
+                window.location.href = '/createBank';
             }
         } else {
             console.error('User ID not found in localStorage');
@@ -148,6 +500,29 @@
             window.location.href = '/login';
         }
     });
+
+
+
+    async function sendVerificationCode() {
+        try {
+            const email_check = localStorage.getItem('user_email');
+            const response = await fetch(`/send-email?toEmail=${encodeURIComponent(email_check)}`, {
+                method: 'GET'
+            });
+
+            const result = await response.text(); // Đọc phản hồi dưới dạng văn bản
+            if (response.ok) {
+                console.log('Verification code sent:', result);
+                // Hiển thị thông báo hoặc xử lý kết quả nếu cần
+            } else {
+                console.error('Error sending verification code:', result);
+                alert('Có lỗi xảy ra khi gửi mã xác thực. Vui lòng thử lại.');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Có lỗi xảy ra khi gửi mã xác thực. Vui lòng thử lại.');
+        }
+    }
 
 
     document.getElementById('transactionForm').addEventListener('submit', async (event) => {
@@ -159,45 +534,94 @@
             amount: parseFloat(document.getElementById('amount').value)
         };
 
-        console.log('Transaction Details:', transactionDetails); // Log dữ liệu trước khi gửi
+        console.log('Transaction Details:', transactionDetails);
 
-        const jwtToken = localStorage.getItem('jwtToken');
+        // Show verification dialog
+        document.getElementById('verificationOverlay').style.display = 'block';
+        document.getElementById('verificationDialog').style.display = 'block';
 
-        try {
-            const response = await fetch(`/transfer/${transactionDetails.source}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + jwtToken
-                },
-                body: JSON.stringify(transactionDetails)
-            });
-
-            const data = await response.json();
-
-            if (response.ok && data.message !== 'Bank not found' && data.message !== 'Insufficient funds' && data.message !== 'Invalid authentication' ) {
-                console.log('Transfer Success:', data);
-                alert('Chuyển tiền thành công');
-            } else {
-                console.error('Transfer Error:', data);
-
-                if (data.message === 'Bank not found' ) {
-                    alert(`Số tài khoản không tồn tại`);
-                }
-                else if(data.message === 'Insufficient funds'){
-                    alert(`Số tiền không đủ để chuyển`);
-                }
-                else if(data.status === 400){
-                    alert('Access denice');
-                }
-                else {
-                    alert('Đã xảy ra lỗi khi chuyển tiền');
-                }
-            }
-        } catch (error) {
-            console.error('Fetch Error:', error);
-            alert('Đã xảy ra lỗi khi chuyển tiền');
+        // Send verification code to user's email
+        const userEmail = localStorage.getItem('user_email'); // Assuming you store user email in local storage
+        if (userEmail) {
+            sendVerificationCode();
+        } else {
+            alert('Không tìm thấy email người dùng.');
+            document.getElementById('verificationOverlay').style.display = 'none';
+            document.getElementById('verificationDialog').style.display = 'none';
         }
+
+        document.getElementById('verifyCodeButton').addEventListener('click', async () => {
+            const verificationCode = document.getElementById('verificationCode').value;
+
+            try {
+                const response = await fetch('/verify-code', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ code: verificationCode })
+                });
+
+                const result = await response.json();
+
+                if (response.ok && result.valid === true) {
+                    console.log('Verification success:', result);
+                    // Perform the transfer
+                    const jwtToken = localStorage.getItem('jwtToken');
+                    try {
+                        const response = await fetch(`/transfer/${transactionDetails.source}`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': 'Bearer ' + jwtToken
+                            },
+                            body: JSON.stringify(transactionDetails)
+                        });
+
+                        const data = await response.json();
+
+                        if (response.ok && data.message !== 'Bank not found' && data.message !== 'Insufficient funds' && data.message !== 'Invalid authentication' ) {
+                            console.log('Transfer Success:', data);
+                            alert('Chuyển tiền thành công');
+                        } else {
+                            console.error('Transfer Error:', data);
+
+                            if (data.message === 'Bank not found' ) {
+                                alert(`Số tài khoản không tồn tại`);
+                            }
+                            else if(data.message === 'Insufficient funds'){
+                                alert(`Số tiền không đủ để chuyển`);
+                            }
+                            else if(data.status === 400){
+                                alert('Access denice');
+                            }
+                            else {
+                                alert('Đã xảy ra lỗi khi chuyển tiền');
+                            }
+                        }
+                    } catch (error) {
+                        console.error('Fetch Error:', error);
+                        alert('Đã xảy ra lỗi khi chuyển tiền');
+                    }
+                }
+
+                else {
+                    alert("Code invalid")
+                }
+
+                // Hide verification dialog
+                document.getElementById('verificationOverlay').style.display = 'none';
+                document.getElementById('verificationDialog').style.display = 'none';
+            } catch (error) {
+                console.error('Verification Error:', error);
+                alert('Có lỗi xảy ra khi xác thực mã.');
+            }
+        });
+
+        document.getElementById('cancelVerification').addEventListener('click', () => {
+            document.getElementById('verificationOverlay').style.display = 'none';
+            document.getElementById('verificationDialog').style.display = 'none';
+        });
     });
 
     document.getElementById('destination').addEventListener('blur', async (event) => {

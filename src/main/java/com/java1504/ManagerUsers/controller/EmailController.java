@@ -11,15 +11,19 @@ public class EmailController {
     @Autowired
     private EmailService emailService;
 
+    private static int codeVerified;
+
 
     @GetMapping("/send-email")
     public String sendEmail(@RequestParam String toEmail) {
         try {
             int verificationCode = emailService.genRandomNumber();
+            codeVerified = verificationCode;
             emailService.sendHtmlEmail(toEmail, "Mã xác thực chuyển tiền", verificationCode);
             // Store the verification code temporarily (e.g., in a database or cache) to verify later
             // For demonstration purposes, this code is not stored
-            return "Email sent successfully with verification code: " + verificationCode;
+            System.out.println("Send successfully!");
+            return "Send successfully!";
         } catch (MessagingException e) {
             e.printStackTrace();
             return "Failed to send email";
@@ -38,8 +42,10 @@ public class EmailController {
     }
 
     private boolean isValidCode(int code) {
-        // Implement the actual code validation logic
-        return true;
+        if (codeVerified == code) {
+            return true;
+        }
+        return false;
     }
 
     // Class for handling verification requests

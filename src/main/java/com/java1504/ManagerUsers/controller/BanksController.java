@@ -86,4 +86,14 @@ public class BanksController {
                 .body(csvData);
     }
 
+    @GetMapping("getBanks/{id}")
+    public ResponseData<?> getBanks(@PathVariable int id) {
+        try {
+            return new ResponseData<>(HttpStatus.OK.value(),"get success",LocalDateTime.now(),bankServices.getBankByUser(id));
+        }
+        catch (RuntimeException e){
+            return new ResponseData<>(HttpStatus.BAD_REQUEST.value(), e.getMessage());
+        }
+    }
+
 }
