@@ -39,7 +39,7 @@ public class UserServicesImpl implements UserServices {
     public Users addUser(UserDTO userDTO){
 
         if(checkOverlap(userDTO)){
-            Users users = userMapper.INSTANCE.userDTOToUser(userDTO);
+            Users users = UserMapper.INSTANCE.userDTOToUser(userDTO);
             PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
             users.setPassword(passwordEncoder.encode(userDTO.getPassword()));
             users.setRole(Role.USER);

@@ -27,6 +27,7 @@ public class Bank {
     private Users users;
 
 
+    // Khong dung trong nay, dung trong request dto
     @NumberFormat
     private String bankNumber;
 

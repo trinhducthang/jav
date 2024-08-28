@@ -55,6 +55,7 @@ public class Users {
     private Set<Card> cards;
 
     @OneToMany(mappedBy = "users",cascade = CascadeType.DETACH)
+    //Khong can thiet, se map qua response dto
     @JsonManagedReference
     private Set<TransactionHistory> transactionHistories;
 

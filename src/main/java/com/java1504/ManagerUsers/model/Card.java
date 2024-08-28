@@ -37,6 +37,7 @@ public class Card {
     @JsonBackReference
     private Users users;
 
+    // khong dung method trong nay
     public Card() {
         this.card_number = generateCardId();
         this.expiryDate = LocalDateTime.now().plus(5, ChronoUnit.YEARS);

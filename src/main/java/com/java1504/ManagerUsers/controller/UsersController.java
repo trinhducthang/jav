@@ -29,6 +29,7 @@ public class UsersController {
     @Operation(summary = "summary", description = "Add Object", responses = {
             
     })
+    // khong de dong tu nhu add, delete, search, v.v... trong endpoint
     @PostMapping("/add")
     public ResponseData<?> addUser(@Valid @RequestBody UserDTO userDTO) {
         try {
@@ -91,8 +92,6 @@ public class UsersController {
     public Optional<Users> getUserByUsername(@PathVariable String username) {
         return userServices.findByUsername(username);
     }
-
-
 
     @GetMapping("/getUser/{number}")
     public String getUserByNumber(@PathVariable String number){

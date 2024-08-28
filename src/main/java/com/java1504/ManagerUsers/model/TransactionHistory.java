@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table
+// Khong dung @Data
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -20,6 +21,7 @@ public class TransactionHistory {
 
     private String bank_source;
 
+    // Nen them @Column
     private String bank_destination;
 
     private String amount;

@@ -8,6 +8,7 @@ import org.mapstruct.factory.Mappers;
 
 @Mapper(componentModel = "spring")
 public interface UserMapper {
+    // Khong can tao instance nhu the nay
     UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
 
     UserDTO userToUserDTO(Users user);

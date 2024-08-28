@@ -17,6 +17,7 @@ import java.time.LocalDateTime;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserDTO {
+    // Khong nen de id o day
     private Integer id;
 
     @NotNull(message = "username must be not null")
@@ -41,5 +42,6 @@ public class UserDTO {
 
     private Role role;
 
+    // Khong can thiet nhap createAt
     private LocalDateTime createdAt;
 }
