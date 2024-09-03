@@ -19,7 +19,6 @@ import java.time.LocalDateTime;
 import java.util.Map;
 
 @RestController
-//nen dung constructor injection ntn
 @RequiredArgsConstructor
 public class BanksController {
     //day la constructor injection

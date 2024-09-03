@@ -2,14 +2,15 @@ package com.java1504.ManagerUsers.controller;
 
 import com.java1504.ManagerUsers.service.impl.EmailService;
 import jakarta.mail.MessagingException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+@RequiredArgsConstructor
 @RestController
 public class EmailController {
 
-    @Autowired
-    private EmailService emailService;
+    private final EmailService emailService;
 
     private static int codeVerified;
 

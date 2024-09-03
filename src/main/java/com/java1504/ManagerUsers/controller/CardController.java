@@ -4,6 +4,7 @@ import com.java1504.ManagerUsers.dto.CardDTO;
 import com.java1504.ManagerUsers.dto.response.ResponseData;
 import com.java1504.ManagerUsers.model.Card;
 import com.java1504.ManagerUsers.service.CardService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -11,11 +12,12 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/card")
 public class CardController {
 
-    @Autowired
-    private CardService cardService;
+
+    private final CardService cardService;
 
     @PostMapping("/{id}")
     public ResponseData<?> addCard(@PathVariable int id) {

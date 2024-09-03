@@ -1,6 +1,7 @@
 package com.java1504.ManagerUsers.controller;
 
 import com.java1504.ManagerUsers.service.impl.OAuth2UserService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -9,10 +10,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
+@RequiredArgsConstructor
 public class OAuth2LoginController {
 
-    @Autowired
-    private OAuth2UserService oAuth2UserService;
+    private final OAuth2UserService oAuth2UserService;
 
 
     @GetMapping("/oauth2/loginSuccess")

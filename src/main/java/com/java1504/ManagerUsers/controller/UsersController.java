@@ -10,8 +10,6 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -33,14 +31,17 @@ public class UsersController {
     @PostMapping("/add")
     public ResponseData<?> addUser(@Valid @RequestBody UserDTO userDTO) {
         try {
-            userServices.addUser(userDTO);
-            return new ResponseData<>(HttpStatus.CREATED.value(),
-                    "User added successfully",
-                    LocalDateTime.now(),
-                    userDTO);
+                return ResponseData.builder()
+                    .status(HttpStatus.OK.value())
+                    .message("User added successfully")
+                    .data(userServices.addUser(userDTO))
+                    .build();
         }
         catch (Exception e){
-            return new ResponseData<>(HttpStatus.BAD_REQUEST.value(), e.getMessage());
+            return ResponseData.builder()
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                    .message(e.getMessage())
+                    .build();
         }
     }
 
