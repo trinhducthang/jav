@@ -4,19 +4,16 @@ import com.java1504.ManagerUsers.model.Users;
 import com.java1504.ManagerUsers.repository.UsersRepository;
 import com.java1504.ManagerUsers.service.AuthenticationService;
 import com.java1504.ManagerUsers.ultil.Role;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
-import java.util.Optional;
 
+@RequiredArgsConstructor
 @Service
 public class OAuth2UserService {
 
-    @Autowired
-    private UsersRepository usersRepository;
-
-    @Autowired
-    private AuthenticationService authenticationService;
+    private final UsersRepository usersRepository;
+    private final AuthenticationService authenticationService;
 
     public String getUserAttributes(OAuth2User oAuth2User) {
         String name = oAuth2User.getAttribute("name");

@@ -10,35 +10,23 @@ import com.java1504.ManagerUsers.repository.TransactionHistoryRepository;
 import com.java1504.ManagerUsers.repository.UsersRepository;
 import com.java1504.ManagerUsers.service.BankServices;
 import com.java1504.ManagerUsers.service.UserServices;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PostAuthorize;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
+@RequiredArgsConstructor
 @Service
 public class BankServiceImpl implements BankServices {
 
-    @Autowired
-    private BankMapper bankMapper;
-
-    @Autowired
-    private BanksRepository banksRepository;
-
-    @Autowired
-    private UsersRepository usersRepository;
-
-    @Autowired
-    private TransactionHistoryRepository transactionHistoryRepository;
-
-    @Autowired
-    UserServices userServices;
+    private final BankMapper bankMapper;
+    private final BanksRepository banksRepository;
+    private final UsersRepository usersRepository;
+    private final TransactionHistoryRepository transactionHistoryRepository;
+    final UserServices userServices;
 
     @Override
     public Bank addBank(Bank bank, int id) {
@@ -116,9 +104,7 @@ public class BankServiceImpl implements BankServices {
 
     @Override
     public List<Bank> getBankByUser(Integer id) {
-        // Thực hiện truy vấn dữ liệu từ cơ sở dữ liệu dựa trên id của người dùng
-        List<Bank> banks = banksRepository.findByUsers_id(id);
-        return banks;
+        return banksRepository.findByUsers_id(id);
     }
 
 }

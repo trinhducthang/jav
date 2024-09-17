@@ -35,11 +35,6 @@ public class GlobalExceptionHandler {
         return errorResponse;
     }
 
-    @ExceptionHandler(UserNotFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse handlerNotFoundException(Exception e, WebRequest request){
-        return new ErrorResponse(HttpStatus.NOT_FOUND.value(),e.getMessage());
-    }
 
 
 }

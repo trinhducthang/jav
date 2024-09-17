@@ -7,24 +7,22 @@ import com.java1504.ManagerUsers.model.Users;
 import com.java1504.ManagerUsers.repository.CardRepository;
 import com.java1504.ManagerUsers.repository.UsersRepository;
 import com.java1504.ManagerUsers.service.CardService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
+import java.util.List;
+
+@RequiredArgsConstructor
 @Service
 public class CardServiceImpl implements CardService {
 
-    @Autowired
-    private CardRepository cardRepository;
+    private final CardRepository cardRepository;
 
-    @Autowired
-    private CardMapper cardMapper;
+    private final CardMapper cardMapper;
 
-    @Autowired
-    private UsersRepository usersRepository;
+    private final UsersRepository usersRepository;
 
     @Override
     public CardDTO addCard( int id) {

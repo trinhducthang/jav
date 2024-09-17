@@ -3,6 +3,7 @@ package com.java1504.ManagerUsers.service.impl;
 import com.java1504.ManagerUsers.model.TransactionHistory;
 import com.java1504.ManagerUsers.repository.TransactionHistoryRepository;
 import com.java1504.ManagerUsers.service.TransactionHistoryService;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,11 +12,11 @@ import org.springframework.stereotype.Service;
 import java.io.StringWriter;
 import java.util.*;
 
+@RequiredArgsConstructor
 @Service
 public class TransactionHistoryServiceImpl implements TransactionHistoryService {
 
-    @Autowired
-    private TransactionHistoryRepository transactionHistoryRepository;
+    private final TransactionHistoryRepository transactionHistoryRepository;
 
 
     @Override

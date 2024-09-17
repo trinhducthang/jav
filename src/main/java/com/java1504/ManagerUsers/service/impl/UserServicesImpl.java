@@ -9,6 +9,7 @@ import com.java1504.ManagerUsers.ultil.Role;
 import com.java1504.ManagerUsers.repository.UsersRepository;
 import com.java1504.ManagerUsers.model.Users;
 import com.java1504.ManagerUsers.service.UserServices;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -26,14 +27,11 @@ import java.util.Optional;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class UserServicesImpl implements UserServices {
 
-
-    @Autowired
-    private UserMapper userMapper;
-
-    @Autowired
-    private UsersRepository usersRepository;
+    private final UserMapper userMapper;
+    private final UsersRepository usersRepository;
 
 
     public Users addUser(UserDTO userDTO){
