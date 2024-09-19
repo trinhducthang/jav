@@ -1,5 +1,6 @@
 package com.ducthang.ManagerUsers.service;
 
+import com.ducthang.ManagerUsers.dto.BankTransferDto;
 import com.ducthang.ManagerUsers.model.Bank;
 import com.ducthang.ManagerUsers.dto.BankDTO;
 import org.springframework.security.access.prepost.PostAuthorize;
@@ -22,4 +23,7 @@ public interface BankServices {
     @PostAuthorize("returnObject[0].users.username == authentication.name")
     public List<Bank> getBankByUser(Integer id);
 
+    public boolean TransferOtherBank(BankTransferDto request);
+
+    public Bank GetBank(String bankName, String bankNumber);
 }

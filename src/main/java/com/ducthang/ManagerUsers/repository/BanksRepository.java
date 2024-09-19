@@ -8,4 +8,5 @@ import java.util.List;
 public interface BanksRepository extends JpaRepository<Bank, Integer> {
     public Bank findByBankNumber(String bankNumber);
     public List<Bank> findByUsers_id(int id);
+    public Bank findByNameAndBankNumber(String name, String bankNumber);
 }

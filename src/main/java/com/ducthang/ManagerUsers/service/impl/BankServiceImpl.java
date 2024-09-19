@@ -1,5 +1,6 @@
 package com.ducthang.ManagerUsers.service.impl;
 
+import com.ducthang.ManagerUsers.dto.BankTransferDto;
 import com.ducthang.ManagerUsers.mapper.BankMapper;
 import com.ducthang.ManagerUsers.model.Bank;
 import com.ducthang.ManagerUsers.model.TransactionHistory;
@@ -106,5 +107,31 @@ public class BankServiceImpl implements BankServices {
     public List<Bank> getBankByUser(Integer id) {
         return banksRepository.findByUsers_id(id);
     }
+
+    @Override
+    public boolean TransferOtherBank(BankTransferDto request) {
+        Bank bankSource = banksRepository.findByNameAndBankNumber(request.getNameSource(), request.getBankNumberSource());
+        if(bankSource == null) throw new RuntimeException("Bank sources not found");
+        Bank bankDestination = banksRepository.findByNameAndBankNumber(request.getNameDestination(), request.getBankNumberDestination());
+        if(bankDestination == null) throw new RuntimeException("Bank destination not found");
+        if(bankSource.getBalance() > bankDestination.getBalance()) throw new RuntimeException("Insufficient funds");
+
+        String authenticationName = SecurityContextHolder.getContext().getAuthentication().getName();
+        String username = bankSource.getUsers().getUsername();
+        if(!authenticationName.equals(username)) throw new RuntimeException("Invalid authentication");
+        else{
+            bankSource.setBalance(bankSource.getBalance() - request.getAmount());
+            bankDestination.setBalance(bankDestination.getBalance() + request.getAmount());
+            banksRepository.save(bankSource);
+            banksRepository.save(bankDestination);
+        }
+        return true;
+    }
+
+    @Override
+    public Bank GetBank(String bankName, String bankNumber) {
+        return banksRepository.findByNameAndBankNumber(bankName, bankNumber);
+    }
+
 
 }

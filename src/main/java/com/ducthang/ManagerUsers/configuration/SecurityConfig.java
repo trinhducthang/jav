@@ -56,7 +56,8 @@ public class SecurityConfig {
             "/transfer/{id}",
             "/trahistory",
             "/transaction-csv",
-            "/send-email"
+            "/send-email",
+            "/getbank"
     };
 
     private final String[] PUBLIC_UI_ENDPOINTS ={

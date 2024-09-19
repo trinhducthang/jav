@@ -1,6 +1,7 @@
 package com.ducthang.ManagerUsers.controller;
 
 
+import com.ducthang.ManagerUsers.dto.BankTransferDto;
 import com.ducthang.ManagerUsers.service.TransactionHistoryService;
 import com.ducthang.ManagerUsers.dto.BankDTO;
 import com.ducthang.ManagerUsers.model.Bank;
@@ -91,6 +92,22 @@ public class BanksController {
         catch (RuntimeException e){
             return new ResponseData<>(HttpStatus.BAD_REQUEST.value(), e.getMessage());
         }
+    }
+
+    @PostMapping("transfer/otherBanks")
+    public ResponseData<?> transferOtherBanks(@RequestBody BankTransferDto transferDto) {
+        try {
+            return new ResponseData<>(HttpStatus.OK.value(), "Transfer success", LocalDateTime.now(), bankServices.TransferOtherBank(transferDto));
+        }
+        catch (RuntimeException e){
+            return new ResponseData<>(HttpStatus.BAD_REQUEST.value(), e.getMessage());
+        }
+    }
+
+
+    @GetMapping("getbank")
+    public Bank getBank(@RequestParam String bankName, @RequestParam String Numberbank) {
+        return bankServices.GetBank(bankName,Numberbank);
     }
 
 }
