@@ -24,6 +24,4 @@ public interface BankServices {
     public List<Bank> getBankByUser(Integer id);
 
     public boolean TransferOtherBank(BankTransferDto request);
-
-    public Bank GetBank(String bankName, String bankNumber);
 }

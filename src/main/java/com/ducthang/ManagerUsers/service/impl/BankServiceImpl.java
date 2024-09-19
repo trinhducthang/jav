@@ -128,10 +128,5 @@ public class BankServiceImpl implements BankServices {
         return true;
     }
 
-    @Override
-    public Bank GetBank(String bankName, String bankNumber) {
-        return banksRepository.findByNameAndBankNumber(bankName, bankNumber);
-    }
-
 
 }

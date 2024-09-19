@@ -105,9 +105,5 @@ public class BanksController {
     }
 
 
-    @GetMapping("getbank")
-    public Bank getBank(@RequestParam String bankName, @RequestParam String Numberbank) {
-        return bankServices.GetBank(bankName,Numberbank);
-    }
 
 }
