@@ -4,9 +4,9 @@ ARG FILE_JAR=target/user-bank-manager-0.0.1-SNAPSHOT.jar
 
 ADD ${FILE_JAR} api-service.jar
 
-ENV SPRING_DATASOURCE_URL=jdbc:mysql://192.168.1.100:3306/test
-ENV SPRING_DATASOURCE_USERNAME=root
-ENV SPRING_DATASOURCE_PASSWORD=123456789
+ENV SPRING_DATASOURCE_URL=jdbc:mysql://mysql-3f75728b-thang79cfc6cdz-0d9d.h.aivencloud.com:11085/defaultdb
+ENV SPRING_DATASOURCE_USERNAME=avnadmin
+ENV SPRING_DATASOURCE_PASSWORD=AVNS_dn-2gAgkgCbZkyN34uH
 
 ENTRYPOINT ["java", "-jar", "api-service.jar"]
 
